@@ -68,6 +68,17 @@
                 clip-rule="evenodd"></path>
             </svg>
           </button>
+          <div id="burger-menu" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center hidden buttom-4 left-12 ">
+          <div class="bg-white p-6 rounded-lg shadow-lg w-3/4 max-w-md">
+            <button id="close-btn" class="text-right text-2xl text-red-600 hover:text-red-800">&times;</button>
+            <ul class="space-y-4 text-center text-gray-800 text-xl">
+              <li><a href="#" class="block hover:text-blue-600">Accueil</a></li>
+              <li><a href="#" class="block hover:text-blue-600">Services</a></li>
+              <li><a href="#" class="block hover:text-blue-600">À propos</a></li>
+              <li><a href="#" class="block hover:text-blue-600">Contact</a></li>
+            </ul>
+          </div>
+        </div>
         </div>
       </div>
     </header> 
@@ -304,3 +315,6 @@
         <p class='text-gray-600 text-sm md:ml-auto'>© ReadymadeUI. All rights reserved.</p>
       </div>
     </footer>
+    <script src="/view/app.js"></script>
+    </body>
+</html>
