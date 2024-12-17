@@ -1,3 +1,54 @@
+
+
+
+<?php
+session_start();
+
+include('C:\Users\ycode\Desktop\BLOG HUB\connection\connection.php');
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $email = $_POST['email'];
+    $password = $_POST['password'];
+
+    $sql = "SELECT * FROM users WHERE email = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param('s', $email);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows > 0) {
+        $user = $result->fetch_assoc();
+
+        if (password_verify($password, $user['password'])) {
+            
+            $token = bin2hex(random_bytes(32)); // Génère un token unique de 32 octets
+            
+            // Stocker le token dans la session
+            setcookie('token', $token, time() + 3600 , "/");
+            /*$_SESSION['user_id'] = $user['id'];
+            $_SESSION['nom'] = $user['nom'];
+            $_SESSION['role'] = $user['role'];*/
+
+            // Enregistrer le token dans la base de données pour l'utilisateur
+            $sql_update_token = "UPDATE users SET token = ? WHERE id = ?";
+            $stmt_update_token = $conn->prepare($sql_update_token);
+            $stmt_update_token->bind_param('si', $token, $user['id']);
+            $stmt_update_token->execute();
+
+           
+                header('Location: /index.php');
+          
+        } else {
+            $error_message = "Identifiants incorrects.";
+        }
+    } else {
+        $error_message = "Identifiants incorrects.";
+    }
+}
+?>
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
