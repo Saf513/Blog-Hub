@@ -71,11 +71,12 @@
         </div>
       </div>
     </header> 
+
     <footer class="font-sans tracking-wide bg-gray-50 px-10 pt-12 pb-6">
       <div class="flex flex-wrap justify-between gap-10">
         <div class="max-w-md">
           <a href='javascript:void(0)'>
-            <img src="https://readymadeui.com/readymadeui.svg" alt="logo" class='w-36' />
+            <img src="/IMG/BLOG HUB (1) (1).png"  style="width: 100px; height: max-content ; display: block;"  git add .  alt="logo" class='w-36' />
           </a>
           <div class="mt-6">
             <p class="text-gray-600 leading-relaxed text-sm">ReadymadeUI is a library of pre-designed UI components built for Tailwind CSS. It offers a collection of versatile, ready-to-use components that streamline the development process by providing a wide range of UI elements.</p>
