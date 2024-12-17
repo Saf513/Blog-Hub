@@ -38,15 +38,13 @@
             <a href='javascript:void(0)'
               class='hover:text-[#007bff] text-[#007bff] block font-semibold text-[15px]'>Home</a>
           </li>
-          <li class='max-lg:border-b border-gray-300 max-lg:py-3 px-3'><a href='javascript:void(0)'
+          <li class='max-lg:border-b border-gray-300 max-lg:py-3 px-3'><a href='/view/BLOG.PHP'
               class='hover:text-[#007bff] text-gray-500 block font-semibold text-[15px]'>Blog</a>
           </li>
           <li class='max-lg:border-b border-gray-300 max-lg:py-3 px-3'><a href='javascript:void(0)'
               class='hover:text-[#007bff] text-gray-500 block font-semibold text-[15px]'>Feature</a>
           </li>
-          <!-- <li class='max-lg:border-b border-gray-300 max-lg:py-3 px-3'><a href='javascript:void(0)'
-              class='hover:text-[#007bff] text-gray-500 block font-semibold text-[15px]'>Blog</a>
-            </li> -->
+          
           <li class='max-lg:border-b border-gray-300 max-lg:py-3 px-3'><a href='javascript:void(0)'
               class='hover:text-[#007bff] text-gray-500 block font-semibold text-[15px]'>About</a>
           </li>
@@ -58,10 +56,10 @@
 
       <div class='flex max-lg:ml-auto space-x-4'>
         <button
-          class='px-4 py-2 text-sm rounded-full font-bold text-gray-500 border-2 bg-transparent hover:bg-gray-50 transition-all ease-in-out duration-300'>Login</button>
+          class='px-4 py-2 text-sm rounded-full font-bold text-gray-500 border-2 bg-transparent hover:bg-gray-50 transition-all ease-in-out duration-300'><a href="/authentification/login.php">Login</a></button>
         <button
-          class='px-4 py-2 text-sm rounded-full font-bold text-white border-2 border-[#007bff] bg-[#007bff] transition-all ease-in-out duration-300 hover:bg-transparent hover:text-[#007bff]'>Sign
-          up</button>
+          class='px-4 py-2 text-sm rounded-full font-bold text-white border-2 border-[#007bff] bg-[#007bff] transition-all ease-in-out duration-300 hover:bg-transparent hover:text-[#007bff]'><a href="/authentification/inscreption.php">Sign Up</a>
+        </button>
 
         <button id="toggleOpen" class='lg:hidden'>
           <svg class="w-7 h-7" fill="#000" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
@@ -97,7 +95,7 @@
         <h1 class="text-4xl md:text-5xl font-extrabold leading-tight mb-6">Bienvenue sur notre blog !</h1>
         <p class="text-lg md:text-xl mb-12">Explorez les dernières tendances, conseils et inspirations pour enrichir votre quotidien .</p>
         <p class="text-lg md:text-xl mb-12">Veuillez creer votre propre blog .</p>
-        <button type="button" class="bg-indigo-600 hover:bg-indigo-700 text-white text-base tracking-wide px-6 py-3 rounded-full transition duration-300 ease-in-out shadow-lg hover:shadow-xl">Get Started</button>
+        <button  type="button" class="bg-indigo-600 hover:bg-indigo-700 text-white text-base tracking-wide px-6 py-3 rounded-full transition duration-300 ease-in-out shadow-lg hover:shadow-xl"><a href="/users/addArticle.php">Create Publication</a></button>
       </div>
     </div>
   </section>

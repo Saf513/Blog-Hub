@@ -29,11 +29,11 @@
           <ul
             class='lg:flex gap-x-5 max-lg:space-y-3 max-lg:fixed max-lg:bg-white max-lg:w-1/2 max-lg:min-w-[300px] max-lg:top-0 max-lg:left-0 max-lg:p-6 max-lg:h-full max-lg:shadow-md max-lg:overflow-auto z-50'>
             <li class='mb-6 hidden max-lg:block'>
-              <a href="javascript:void(0)"><img src="/IMG/BLOG HUB.svg" class="w-32 h-32 object-contain" alt="logo" class='w-36' />
+              <a href="/index.php"><img src="/IMG/BLOG HUB.svg" class="w-32 h-32 object-contain" alt="logo" class='w-36' />
               </a>
             </li>
             <li class='max-lg:border-b border-gray-300 max-lg:py-3 px-3'>
-              <a href='javascript:void(0)'
+              <a href='/index.php'
                 class='hover:text-[#007bff] text-[#007bff] block font-semibold text-[15px]'>Home</a>
             </li>
             <li class='max-lg:border-b border-gray-300 max-lg:py-3 px-3'><a href='javascript:void(0)'
@@ -109,7 +109,7 @@
               <h3 class="text-xl font-bold text-gray-800">A Guide to Igniting Your Imagination</h3>
               <span class="text-sm block text-gray-400 mt-2">10 FEB 2023 | BY JOHN DOE</span>
               <p class="text-sm text-gray-500 mt-4">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis accumsan, nunc et tempus blandit.</p>
-              <a href="javascript:void(0);" class="mt-4 inline-block text-blue-600 font-semibold text-sm hover:underline">Read More</a>
+              <a href="/view/REAMORE.PHP" class="mt-4 inline-block text-blue-600 font-semibold text-sm hover:underline">Read More</a>
             </div>
           </div>
         

@@ -31,22 +31,20 @@
                 <ul
                     class='lg:flex gap-x-5 max-lg:space-y-3 max-lg:fixed max-lg:bg-white max-lg:w-1/2 max-lg:min-w-[300px] max-lg:top-0 max-lg:left-0 max-lg:p-6 max-lg:h-full max-lg:shadow-md max-lg:overflow-auto z-50'>
                     <li class='mb-6 hidden max-lg:block'>
-                        <a href="javascript:void(0)"><img src="/IMG/BLOG HUB.svg" class="w-32 h-32 object-contain" alt="logo" class='w-36' />
+                        <a href="/index.php"><img src="/IMG/BLOG HUB.svg" class="w-32 h-32 object-contain" alt="logo" class='w-36' />
                         </a>
                     </li>
                     <li class='max-lg:border-b border-gray-300 max-lg:py-3 px-3'>
-                        <a href='javascript:void(0)'
+                        <a href='/index.php'
                             class='hover:text-[#007bff] text-[#007bff] block font-semibold text-[15px]'>Home</a>
                     </li>
-                    <li class='max-lg:border-b border-gray-300 max-lg:py-3 px-3'><a href='javascript:void(0)'
+                    <li class='max-lg:border-b border-gray-300 max-lg:py-3 px-3'><a href='/view/BLOG.PHP'
                             class='hover:text-[#007bff] text-gray-500 block font-semibold text-[15px]'>Blog</a>
                     </li>
                     <li class='max-lg:border-b border-gray-300 max-lg:py-3 px-3'><a href='javascript:void(0)'
                             class='hover:text-[#007bff] text-gray-500 block font-semibold text-[15px]'>Feature</a>
                     </li>
-                    <!-- <li class='max-lg:border-b border-gray-300 max-lg:py-3 px-3'><a href='javascript:void(0)'
-              class='hover:text-[#007bff] text-gray-500 block font-semibold text-[15px]'>Blog</a>
-            </li> -->
+                   
                     <li class='max-lg:border-b border-gray-300 max-lg:py-3 px-3'><a href='javascript:void(0)'
                             class='hover:text-[#007bff] text-gray-500 block font-semibold text-[15px]'>About</a>
                     </li>
