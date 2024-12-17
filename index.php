@@ -37,14 +37,14 @@
                 class='hover:text-[#007bff] text-[#007bff] block font-semibold text-[15px]'>Home</a>
             </li>
             <li class='max-lg:border-b border-gray-300 max-lg:py-3 px-3'><a href='javascript:void(0)'
-              class='hover:text-[#007bff] text-gray-500 block font-semibold text-[15px]'>Team</a>
+              class='hover:text-[#007bff] text-gray-500 block font-semibold text-[15px]'>Blog</a>
             </li>
             <li class='max-lg:border-b border-gray-300 max-lg:py-3 px-3'><a href='javascript:void(0)'
               class='hover:text-[#007bff] text-gray-500 block font-semibold text-[15px]'>Feature</a>
             </li>
-            <li class='max-lg:border-b border-gray-300 max-lg:py-3 px-3'><a href='javascript:void(0)'
+            <!-- <li class='max-lg:border-b border-gray-300 max-lg:py-3 px-3'><a href='javascript:void(0)'
               class='hover:text-[#007bff] text-gray-500 block font-semibold text-[15px]'>Blog</a>
-            </li>
+            </li> -->
             <li class='max-lg:border-b border-gray-300 max-lg:py-3 px-3'><a href='javascript:void(0)'
               class='hover:text-[#007bff] text-gray-500 block font-semibold text-[15px]'>About</a>
             </li>
@@ -72,6 +72,74 @@
       </div>
     </header> 
 
+    <!-- hero section -->
+<section>
+<div class="relative bg-gradient-to-r from-purple-900 to-indigo-800 py-16 font-[sans-serif]">
+      <div class="absolute inset-0">
+        <img src="https://readymadeui.com/cardImg.webp" alt="Background Image" class="w-full h-full object-cover opacity-50" />
+      </div>
+
+      <div class="relative max-w-screen-xl mx-auto px-8 z-10 text-center text-white">
+        <h1 class="text-4xl md:text-5xl font-extrabold leading-tight mb-6">Bienvenue sur notre blog !</h1>
+        <p class="text-lg md:text-xl mb-12">Explorez les dernières tendances, conseils et inspirations pour enrichir votre quotidien .</p>
+        <p class="text-lg md:text-xl mb-12">Veuillez creer votre propre blog .</p>
+        <button type="button" class="bg-indigo-600 hover:bg-indigo-700 text-white text-base tracking-wide px-6 py-3 rounded-full transition duration-300 ease-in-out shadow-lg hover:shadow-xl">Get Started</button>
+      </div>
+    </div>
+</section>
+
+<!-- content site -->
+
+<div class="bg-gradient-to-r from-purple-500 to-blue-500 animate-gradient-x text-white mt-4 rounded-lg shadow-lg p-8 max-w-xl mx-auto font-[sans-serif]">
+      <h2 class="text-2xl font-bold text-center">
+        We're constantly evolving and innovating
+      </h2>
+      <marquee class="mt-4 text-base font-italic" behavior="scroll" direction="left" scrollamount="3">
+        Always pushing boundaries, never settling, always creating the future.
+      </marquee>
+    </div>
+
+    <!-- featurs -->
+
+    <div class="bg-gray-50 px-4 py-12 font-[sans-serif]">
+      <div class="max-w-6xl mx-auto">
+        <h2 class="text-gray-800 sm:text-4xl text-2xl font-extrabold text-left mb-12">Our Features</h2>
+        <div class="grid lg:grid-cols-3 md:grid-cols-2 max-md:max-w-lg mx-auto gap-8">
+          <div class="p-6 bg-white rounded-lg text-left shadow">
+            <h3 class="text-gray-800 text-xl font-bold mb-4">Customization</h3>
+            <p class="text-gray-500 text-sm">Qui elit labore in nisi dolore tempor anim laboris ipsum ad ad consequat id. Dolore et sint mollit in nisi tempor culpa consectetur.</p>
+            <button class="text-sm bg-transparent px-4 py-2 border border-blue-500 text-blue-500 mt-8 rounded-lg">Read More</button>
+          </div>
+
+          <div class="p-6 bg-blue-500 rounded-lg text-left shadow text-white">
+            <h3 class="text-white text-xl font-bold mb-4">Security</h3>
+            <p class="text-sm text-white">Qui elit labore in nisi dolore tempor anim laboris ipsum ad ad consequat id. Dolore et sint mollit in nisi tempor culpa consectetur.</p>
+            <button class="text-sm bg-transparent px-4 py-2 border border-white text-white mt-6 rounded-lg">Read More</button>
+          </div>
+
+          <div class="p-6 bg-white rounded-lg text-left shadow">
+            <h3 class="text-gray-800 text-xl font-bold mb-4">Support</h3>
+            <p class="text-gray-500 text-sm">Qui elit labore in nisi dolore tempor anim laboris ipsum ad ad consequat id. Dolore et sint mollit in nisi tempor culpa consectetur.</p>
+            <button class="text-sm bg-transparent px-4 py-2 border border-blue-500 text-blue-500 mt-8 rounded-lg">Read More</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- news letter -->
+
+    <div class="bg-[#2e0249] py-16 px-6 font-[sans-serif]">
+      <div class="max-w-5xl mx-auto text-center">
+        <h2 class="text-5xl font-bold mb-6 text-white">Subscribe to Our Newsletter</h2>
+        <p class="text-base text-gray-300">Stay updated with the latest news, trends, and special offers. Don't miss out on our exciting updates.</p>
+        <div class="mt-12 flex items-center overflow-hidden bg-gray-50 rounded-md max-w-xl mx-auto">
+          <input type="email" placeholder="Enter your email" class="w-full bg-transparent py-3.5 px-4 text-gray-800 text-base focus:outline-none" />
+          <button class="bg-[#a91079] hover:bg-[#a91079e2] text-white text-base tracking-wide py-3.5 px-6 hover:shadow-md hover:transition-transform transition-transform hover:scale-105 focus:outline-none">
+            Subscribe
+          </button>
+        </div>
+      </div>
+    </div>
+    <!-- footer -->
     <footer class="font-sans tracking-wide bg-gray-50 px-10 pt-12 pb-6">
       <div class="flex flex-wrap justify-between gap-10">
         <div class="max-w-md">
