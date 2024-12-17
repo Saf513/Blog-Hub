@@ -1,4 +1,5 @@
 <?php
+session_start();
 require '../connection/connection.php';
 require '../vendor/autoload.php';
 
@@ -40,48 +41,41 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $sql_insert = "INSERT INTO users (username, email, password, role, token) VALUES (?, ?, ?, ?, ?)";
             $stmt_insert = $conn->prepare($sql_insert);
             $stmt_insert->bind_param('sssss', $nom, $email, $hashed_password, $role, $token);
-             var_dump('hello');
+            
             if ($stmt_insert->execute()) {
                 $mail = new PHPMailer(true);
-                var_dump($mail);
                 try {
+                    // Configuration de l'email
                     $mail->isSMTP();
                     $mail->Host = 'smtp.gmail.com';
                     $mail->SMTPAuth = true;
                     $mail->Username = 'safiakhoulaid@gmail.com';
-                    $mail->Password = 'beprxnwihugqszlv';
-                    // $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
-                    // $mail->Port = 465;
-                    $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-$mail->Port = 587;  // Utilisez 587 pour STARTTLS
+                    $mail->Password = 'htowsukixpyklgnq';
+                    $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
+                    $mail->Port = 465;
 
-
-                    $mail->setFrom('safiakhoulaid@gmail.com','safiakhoulaid');
+                    // Contenu de l'email
+                    $mail->setFrom('safiakhoulaid@gmail.com', 'safiakhoulaid');
                     $mail->addAddress($email, $nom);
-
                     $mail->isHTML(true);
                     $mail->Subject = 'Confirmation d\'inscription';
                     $mail->Body    = "<h1>Bonjour, $nom</h1><p>Merci de vous être inscrit sur notre site !</p>";
-
                     $mail->send();
                 } catch (Exception $e) {
                     echo "Erreur lors de l'envoi de l'email : {$mail->ErrorInfo}";
                 }
             }
 
-            setcookie('token', $token, time() + 3600, '/');
+            // Stockage du token dans la session
+            $_SESSION['token'] = $token;
 
-            // header('Location: /index.php');
-
+            // Redirection vers l'accueil
+            header('Location: /index.php');
             exit();
         }
     }
 }
 ?>
-
-
-
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -103,20 +97,20 @@ $mail->Port = 587;  // Utilisez 587 pour STARTTLS
         </div>
 
         <?php
-        if (!empty($error_message)) {
-            echo `<div class="bg-red-100 text-red-800 p-4 rounded-lg" role="alert">
-        <strong class="font-bold text-sm mr-4">Error!</strong>
-        <span class="block text-sm sm:inline max-sm:mt-2">This is a error message that requires your attention.</span>
-      </div>`;
-        }
+if (!empty($error_message)) {
+    echo '<div class="bg-red-100 text-red-800 p-4 rounded-lg" role="alert">
+        <strong class="font-bold text-sm mr-4">Erreur!</strong>
+        <span class="block text-sm sm:inline max-sm:mt-2">' . htmlspecialchars($error_message) . '</span>
+    </div>';
+}
 
-        if (!empty($success_message)) {
-            echo `  <div class="bg-green-100 text-green-800 p-4 rounded-lg" role="alert">
-            <strong class="font-bold text-sm mr-4">$success_message</strong>
-            <span class="block text-sm sm:inline max-sm:mt-2">This is a success message that requires your attention.</span>
-          </div>`;
-        }
-        ?>
+if (!empty($success_message)) {
+    echo '<div class="bg-green-100 text-green-800 p-4 rounded-lg" role="alert">
+        <strong class="font-bold text-sm mr-4">Succès!</strong>
+        <span class="block text-sm sm:inline max-sm:mt-2">' . htmlspecialchars($success_message) . '</span>
+    </div>';
+}
+?>
 
         <div class="relative -mt-40 m-4">
             <form class="bg-white max-w-xl w-full mx-auto shadow-[0_2px_10px_-3px_rgba(6,81,237,0.3)] p-8 rounded-2xl" method="post">
