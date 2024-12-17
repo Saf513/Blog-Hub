@@ -158,7 +158,7 @@ if (!empty($success_message)) {
                 </div>
 
                 <div class="mt-8">
-                    <label class="text-gray-800 text-xs block mb-2">Confirm Password <password< /p></label>
+                    <label class="text-gray-800 text-xs block mb-2">Confirm Password </label>
                     <div class="relative flex items-center">
                         <input name="password_confirm" type="password" required class="w-full bg-transparent text-sm text-gray-800 border-b border-gray-300 focus:border-blue-500 px-2 py-3 outline-none" placeholder="Enter password" />
                         <svg xmlns="http://www.w3.org/2000/svg" fill="#bbb" stroke="#bbb" class="w-[18px] h-[18px] absolute right-2 cursor-pointer" viewBox="0 0 128 128">
@@ -169,6 +169,9 @@ if (!empty($success_message)) {
                     <button type="submit"
                         class="mt-8 px-6 py-2.5 w-full text-sm bg-blue-500 text-white rounded hover:bg-blue-600 transition-all">Submit
                     </button>
+                    <p class="text-gray-800 text-sm text-center mt-4">
+                    Don't have an account? <a href="/authentification/inscreption.php" class="text-blue-600 font-semibold hover:underline ml-1">Register here</a>
+                </p>
 </body>
 
 </html>
