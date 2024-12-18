@@ -35,10 +35,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $stmt_update_token->execute();
 
                 $_SESSION['token'] = $token;
-                // if ($remember_me) {
-                //   $cookie_value = base64_encode($email); 
-                //   setcookie('remember_me', $cookie_value, time() + (86400 * 30), "/"); 
-                // }
+                if ($remember_me) {
+                  $cookie_value = base64_encode($email); 
+                  setcookie('remember_me', $cookie_value, time() + (86400 * 30), "/"); 
+                }
                 if ($user['role'] == 'admin') {
                     header('Location: /Admin/dashboard.php');
                 } else {

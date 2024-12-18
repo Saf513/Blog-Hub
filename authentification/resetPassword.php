@@ -6,28 +6,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $new_password = trim($_POST['new_password']);
     $confirm_password = trim($_POST['confirm_password']);
+    
     if ($new_password === $confirm_password) {
         $hashed_password = password_hash($new_password, PASSWORD_DEFAULT);
 
-        if (isset($_SESSION['user_id'])) {
-            $sql = "UPDATE users SET password = ? WHERE id = ?";
-            $stmt = $conn->prepare($sql);
-            $stmt->bind_param('si', $hashed_password, $_SESSION['user_id']);
-            if ($stmt->execute()) {
-                // Réinitialisation réussie : supprimer le token de session
-                unset($_SESSION['reset_token']);
-                unset($_SESSION['reset_token_expiry']);
-                unset($_SESSION['user_id']);
+        if (isset($_GET['reset_token']) && isset($_SESSION['reset_token']) && isset($_SESSION['reset_token_expiry'])) {
 
-                // Message de succès et redirection
-                $_SESSION['message'] = "Votre mot de passe a été réinitialisé avec succès.";
-                header('Location: /index.php'); 
-                exit();
+            // Vérifier si le token de l'URL correspond au token en session
+            if ($_GET['reset_token'] === $_SESSION['reset_token']) {
+                
+                // Vérifier si le token est encore valide
+                if (time() <= $_SESSION['reset_token_expiry']) {
+                    
+                    // Mettre à jour le mot de passe dans la base de données
+                    $sql = "UPDATE users SET password = ? WHERE email = ?";
+                    $stmt = $conn->prepare($sql);
+                    $stmt->bind_param('ss', $hashed_password, $_SESSION['reset_email']);
+                    
+                    if ($stmt->execute()) {
+                        // Réinitialiser les variables de session après la mise à jour
+                        unset($_SESSION['reset_token']);
+                        unset($_SESSION['reset_token_expiry']);
+                        unset($_SESSION['reset_email']);
+                        
+                        // Message de succès
+                        $_SESSION['message'] = "Votre mot de passe a été réinitialisé avec succès.";
+                        header('Location: /index.php');
+                        exit();
+                    } else {
+                        echo "Une erreur est survenue lors de la mise à jour du mot de passe.";
+                    }
+                } else {
+                    echo "Le token a expiré. Veuillez demander une nouvelle réinitialisation.";
+                }
             } else {
-                echo "Une erreur est survenue lors de la mise à jour du mot de passe.";
+                echo "Token invalide.";
             }
         } else {
-            echo "Session expirée ou utilisateur non authentifié.";
+            echo "Token manquant ou non configuré.";
         }
     } else {
         echo "Les mots de passe ne correspondent pas.";
@@ -36,7 +52,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 $conn->close();
 ?>
-
 
 
 

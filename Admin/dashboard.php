@@ -843,5 +843,6 @@
       </div>
     </div>
   </div>
+  <script src="/view/app.js" ></script>
 </body>
 </html>
