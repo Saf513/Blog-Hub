@@ -5,7 +5,6 @@
 session_start();
 
 include('C:\Users\ycode\Desktop\BLOG HUB\connection\connection.php');
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
     $email = trim($_POST['email']);
@@ -35,27 +34,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $stmt_update_token->bind_param('si', $token, $user['id']);
                 $stmt_update_token->execute();
 
-                // Stockage des informations de l'utilisateur dans la session
-                $_SESSION['user_id'] = $user['id'];
                 $_SESSION['token'] = $token;
-                if ($remember_me) {
-                  $cookie_value = base64_encode($email); // Vous pouvez utiliser un identifiant unique
-                  setcookie('remember_me', $cookie_value, time() + (86400 * 30), "/"); // Cookie valable 30 jours
-              }
-
-                // Redirection vers la page d'accueil
-                header('Location: /index.php');
+                // if ($remember_me) {
+                //   $cookie_value = base64_encode($email); 
+                //   setcookie('remember_me', $cookie_value, time() + (86400 * 30), "/"); 
+                // }
+                if ($user['role'] == 'admin') {
+                    header('Location: /Admin/dashboard.php');
+                } else {
+                    header('Location: /index.php');
+                }
                 exit();
-            } else {
-                $error_message = "Mot de passe incorrect.";
+              }
+             else {
+              $error_message = "Mot de passe incorrect.";
             }
-        } else {
+        } 
+        else {
             $error_message = "Aucun utilisateur trouvé avec cet email.";
         }
 
         $stmt->close();
     }
 }
+
 
 $conn->close();
 ?>
@@ -135,7 +137,7 @@ $conn->close();
                     <input id="remember-me" name="remember-me" type="checkbox" class="h-4 w-4 border-gray-300 rounded" />
                     <label for="remember-me" class="ml-3 text-sm text-gray-800">Remember me</label>
                 </div>
-                <a href="/authentification/resetPassword.php" class="text-blue-600 text-sm font-semibold hover:underline">Forgot Password?</a>
+                <a href="/authentification/evoyerResetEmail.php" class="text-blue-600 text-sm font-semibold hover:underline">Forgot Password?</a>
             </div>
 
             <!-- Bouton d'envoi -->

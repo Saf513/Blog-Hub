@@ -66,11 +66,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 }
             }
 
-            // Stockage du token dans la session
-            $_SESSION['token'] = $token;
-
-            // Redirection vers l'accueil
-            header('Location: /index.php');
+            if ($user['role'] == 'admin') {
+                header('Location: /admin_dashboard.php');
+            } else {
+                header('Location: /index.php');
+            }
             exit();
         }
     }
@@ -170,7 +170,7 @@ if (!empty($success_message)) {
                         class="mt-8 px-6 py-2.5 w-full text-sm bg-blue-500 text-white rounded hover:bg-blue-600 transition-all">Submit
                     </button>
                     <p class="text-gray-800 text-sm text-center mt-4">
-                    Don't have an account? <a href="/authentification/inscreption.php" class="text-blue-600 font-semibold hover:underline ml-1">Register here</a>
+                    Do you have an account? <a href="/authentification/login.php" class="text-blue-600 font-semibold hover:underline ml-1">Login here</a>
                 </p>
 </body>
 

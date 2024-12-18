@@ -7,56 +7,61 @@ use PHPMailer\PHPMailer\Exception;
 
 require 'C:\Users\ycode\Desktop\BLOG HUB\vendor\autoload.php';
 include('C:\Users\ycode\Desktop\BLOG HUB\connection\connection.php');
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $email = trim($_POST['email']);
-    $sql = "SELECT id, email FROM users WHERE email = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param('s', $email);
-    $stmt->execute();
-    $result = $stmt->get_result();
+    // Sécurisation de l'entrée utilisateur
+    $email = filter_var(trim($_POST['email']), FILTER_VALIDATE_EMAIL);
 
-    if ($result->num_rows > 0) {
-        $user = $result->fetch_assoc();
-        $user_id = $user['id'];
+    if ($email) {
+        $sql = "SELECT id, email FROM users WHERE email = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param('s', $email);
+        $stmt->execute();
+        $result = $stmt->get_result();
 
-        // Générer un token unique
-        $token = bin2hex(random_bytes(32)); // Génère un token de 64 caractères
+        if ($result->num_rows > 0) {
+            $user = $result->fetch_assoc();
+            $user_id = $user['id'];
+
+            // Générer un token sécurisé
+            $token = bin2hex(random_bytes(32));
+            $token_expiry = time() + 3600; // Expire dans 1 heure
 
 
-        // Stocker temporairement le token dans la session
-        $_SESSION['reset_token'] = $token;
-        $_SESSION['reset_token_expiry'] = time() + 3600; // Le token expire dans 1 heure
+            // Configurer et envoyer l'e-mail
+            $mail = new PHPMailer(true);
+            try {
+                $mail->isSMTP();
+                $mail->Host = 'smtp.gmail.com';
+                $mail->SMTPAuth = true;
+                $mail->Username = 'safiakhoulaid@gmail.com';
+                $mail->Password = 'htowsukixpyklgnq';
+                $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
+                $mail->Port = 465;
 
-        // Envoyer l'email avec PHPMailer
-        $mail = new PHPMailer();
-         $mail->isSMTP();
-                    $mail->Host = 'smtp.gmail.com';
-                    $mail->SMTPAuth = true;
-                    $mail->Username = 'safiakhoulaid@gmail.com';
-                    $mail->Password = 'htowsukixpyklgnq';
-                    $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
-                    $mail->Port = 465;
+                $mail->setFrom('safiakhoulaid@gmail.com', 'Votre site');
+                $mail->addAddress($email);
 
-        $mail->setFrom('safiakhoulaid@gmail.com', 'Votre site');
-        $mail->addAddress($email);
+                $mail->isHTML(true);
+                $mail->Subject = 'Reinitialisation de votre mot de passe';
+                $reset_link = "http://localhost:3000/authentification/resetPassword.php?token=$token";
+                $mail->Body = "Bonjour,<br><br>Veuillez cliquer sur le lien suivant pour réinitialiser votre mot de passe : <br><a href='C:\Users\ycode\Desktop\BLOG HUB\authentification\resetPassword.php'>$reset_link</a>";
 
-        $mail->isHTML(true);
-        $mail->Subject = 'Réinitialisation de votre mot de passe';
-        $reset_link = "http://votre_site.com/reset_password.php?token=$token"; // Remplacez par l'URL de votre site
-        $mail->Body = "Bonjour,<br><br>Veuillez cliquer sur le lien suivant pour réinitialiser votre mot de passe : <br><a href='http://localhost:3000/authentification/resetPassword.php'>$reset_link</a>";
-
-        if ($mail->send()) {
-            $_SESSION['message'] = "Un e-mail de réinitialisation a été envoyé. Vérifiez votre boîte de réception.";
+                $mail->send();
+                $_SESSION['message'] = "Un e-mail de réinitialisation a été envoyé. Vérifiez votre boîte de réception.";
+            } catch (Exception $e) {
+                $_SESSION['message'] = "Erreur lors de l'envoi de l'e-mail : " . $mail->ErrorInfo;
+            }
         } else {
-            $_SESSION['message'] = "Erreur lors de l'envoi de l'e-mail. Veuillez réessayer.";
+            $_SESSION['message'] = "Cet e-mail n'est pas enregistré.";
         }
     } else {
-        $_SESSION['message'] = "Cet e-mail n'est pas enregistré.";
+        $_SESSION['message'] = "Adresse e-mail invalide.";
     }
 
-    // Rediriger l'utilisateur
-    // header('Location: C:\Users\ycode\Desktop\BLOG HUB\authentification\evoyerResetEmail.php');
-    // exit();
+    // Redirection vers la page de connexion
+    header('Location: /authentification/login.php');
+    exit();
 }
 
 $conn->close();
@@ -72,7 +77,6 @@ $conn->close();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Réinitialisation du mot de passe</title>
-    <!-- Lien vers Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100 flex items-center justify-center h-screen">
