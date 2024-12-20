@@ -35,15 +35,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $stmt_update_token->execute();
 
                 $_SESSION['token'] = $token;
-                if ($remember_me) {
-                  $cookie_value = base64_encode($email); 
-                  setcookie('remember_me', $cookie_value, time() + (86400 * 30), "/"); 
+                $_SESSION['user_id'] = $user['id'];
+                var_dump($user['id']);
+                if (!isset($_SESSION['token']) && $_SESSION['user_id'] ) {
+                    echo "La session n'a pas enregistré le token.";
+                } else {
+                    echo "Token enregistré : " . $_SESSION['token'];
+                    echo '\n' ;
+                     var_dump($_SESSION);
                 }
+// var_dump($_SESSION['token']);
+// var_dump($_SESSION['user_id']);
+                // if ($remember_me) {
+                //   $cookie_value = base64_encode($email); 
+                //   setcookie('remember_me', $cookie_value, time() + (86400 * 30), "/"); 
+                // }
                 if ($user['role'] == 'admin') {
                     header('Location: /Admin/dashboard.php');
                 } else {
-                    header('Location: /index.php');
-                }
+                   header('Location: /index.php');
+                 }
                 exit();
               }
              else {

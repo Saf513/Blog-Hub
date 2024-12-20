@@ -1,3 +1,71 @@
+<?php
+session_start();
+include('C:\Users\ycode\Desktop\BLOG HUB\connection\connection.php');
+include('C:\Users\ycode\Desktop\BLOG HUB\authentification\userValidation.php');
+$user = userValidation($conn);
+
+if (isset($_GET['id'])) {
+    $article_id = $_GET['id'];
+
+    // Préparer la requête pour récupérer les commentaires
+    $stmt = $conn->prepare("SELECT c.content, c.created_at ,  u.username AS user_name
+    FROM comments c
+    JOIN users u ON c.user_id = u.id
+    WHERE c.article_id = ?");
+
+// Vérifier si la préparation a échoué
+if ($stmt === false) {
+echo "Erreur dans la préparation de la requête : " . $conn->error;
+exit;
+}
+
+// Lier le paramètre à la requête préparée
+$stmt->bind_param("i", $article_id);
+
+// Exécuter la requête
+if (!$stmt->execute()) {
+echo "Erreur lors de l'exécution de la requête : " . $stmt->error;
+exit;
+}
+
+// Récupérer les résultats de la requête
+$result = $stmt->get_result();
+
+// Vérifier si la récupération des résultats a échoué
+if ($result === false) {
+echo "Erreur lors de la récupération des résultats : " . $stmt->error;
+exit;
+}
+
+// Tableau pour stocker les commentaires
+$comments = [];
+
+// Vérifier s'il y a des résultats
+if ($result->num_rows > 0) {
+// Parcourir les résultats
+while ($row = $result->fetch_assoc()) {
+$comments[] = [
+'user_name' => $row['user_name'],
+'content' => $row['content'],
+'created_at' => $row['created_at'],
+// Assurez-vous que `updated_at` existe dans la requête SQL
+'updated_at' => isset($row['updated_at']) ? $row['updated_at'] : null,
+];
+}
+$comments_json = json_encode($comments);
+
+} else {
+echo "Aucun commentaire trouvé pour cet article.";
+}
+
+// Fermer la requête préparée
+$stmt->close();
+
+
+$requete="select "}
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -5,7 +73,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
     <script src="https://cdn.tailwindcss.com"></script>
+
 
 </head>
 
@@ -44,7 +114,7 @@
                     <li class='max-lg:border-b border-gray-300 max-lg:py-3 px-3'><a href='javascript:void(0)'
                             class='hover:text-[#007bff] text-gray-500 block font-semibold text-[15px]'>Feature</a>
                     </li>
-                   
+
                     <li class='max-lg:border-b border-gray-300 max-lg:py-3 px-3'><a href='javascript:void(0)'
                             class='hover:text-[#007bff] text-gray-500 block font-semibold text-[15px]'>About</a>
                     </li>
@@ -54,25 +124,26 @@
                 </ul>
             </div>
 
-            <div class='flex max-lg:ml-auto space-x-4'>
-                <button
-                    class='px-4 py-2 text-sm rounded-full font-bold text-gray-500 border-2 bg-transparent hover:bg-gray-50 transition-all ease-in-out duration-300'>Login</button>
-                <button
-                    class='px-4 py-2 text-sm rounded-full font-bold text-white border-2 border-[#007bff] bg-[#007bff] transition-all ease-in-out duration-300 hover:bg-transparent hover:text-[#007bff]'>Sign
-                    up</button>
-
-                <button id="toggleOpen" class='lg:hidden'>
+            <div class="flex items-center space-x-4">
+                <?php
+                if (isset($_SESSION['token']) && $user) {
+                    echo "<p class='text-gray-700'>Bonjour, " . htmlspecialchars($user['username']) . "</p>";
+                    echo '<a href="/authentification/logout.php" class="px-4 py-2 text-sm rounded-full font-bold text-white border-2 border-red-500 bg-red-500 hover:bg-transparent hover:text-red-500">Déconnexion</a>';
+                } else {
+                    echo '<a href="/authentification/login.php" class="px-4 py-2 text-sm rounded-full font-bold text-gray-500 border-2 hover:bg-gray-50">Login</a>';
+                    echo '<a href="/authentification/inscreption.php" class="px-4 py-2 text-sm rounded-full font-bold text-white border-2 border-[#007bff] bg-[#007bff] hover:bg-transparent hover:text-[#007bff]">Sign Up</a>';
+                }
+                ?>
+                <button id="toggleOpen" class="lg:hidden">
                     <svg class="w-7 h-7" fill="#000" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                        <path fill-rule="evenodd"
-                            d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
-                            clip-rule="evenodd"></path>
+                        <path fill-rule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"></path>
                     </svg>
                 </button>
             </div>
         </div>
     </header>
 
-   
+
     <!-- body content -->
     <div class="grid sm:grid-cols-2 items-center gap-8 font-[sans-serif] max-w-5xl max-sm:max-w-sm mx-auto p-4">
         <div class="sm:h-[400px]">
@@ -92,54 +163,108 @@
 
             <div class="flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0 md:space-x-8">
 
-<!-- Première div : Icônes Sociales -->
-<div class="space-x-3 mt-8 flex items-center">
-    <a href="javascript:void(0)"
-        class="w-7 h-7 inline-flex items-center justify-center rounded-full border-none outline-none bg-blue-600 hover:bg-blue-700 active:bg-blue-600">
-        <svg xmlns="http://www.w3.org/2000/svg" width="14px" fill="#fff" viewBox="0 0 155.139 155.139">
-            <path
-                d="M89.584 155.139V84.378h23.742l3.562-27.585H89.584V39.184c0-7.984 2.208-13.425 13.67-13.425l14.595-.006V1.08C115.325.752 106.661 0 96.577 0 75.52 0 61.104 12.853 61.104 36.452v20.341H37.29v27.585h23.814v70.761h28.48z"
-                data-original="#010002" />
-        </svg>
-    </a>
-    <a href="javascript:void(0)"
-        class="w-7 h-7 inline-flex items-center justify-center rounded-full border-none outline-none bg-[#03a9f4] hover:bg-[#03a1f4] active:bg-[#03a9f4]">
-        <svg xmlns="http://www.w3.org/2000/svg" width="14px" fill="#fff" viewBox="0 0 512 512">
-            <path
-                d="M512 97.248c-19.04 8.352-39.328 13.888-60.48 16.576 21.76-12.992 38.368-33.408 46.176-58.016-20.288 12.096-42.688 20.64-66.56 25.408C411.872 60.704 384.416 48 354.464 48c-58.112 0-104.896 47.168-104.896 104.992 0 8.32.704 16.32 2.432 23.936-87.264-4.256-164.48-46.08-216.352-109.792-9.056 15.712-14.368 33.696-14.368 53.056 0 36.352 18.72 68.576 46.624 87.232-16.864-.32-33.408-5.216-47.424-12.928v1.152c0 51.008 36.384 93.376 84.096 103.136-8.544 2.336-17.856 3.456-27.52 3.456-6.72 0-13.504-.384-19.872-1.792 13.6 41.568 52.192 72.128 98.08 73.12-35.712 27.936-81.056 44.768-130.144 44.768-8.608 0-16.864-.384-25.12-1.44C46.496 446.88 101.6 464 161.024 464c193.152 0 298.752-160 298.752-298.688 0-4.64-.16-9.12-.384-13.568 20.832-14.784 38.336-33.248 52.608-54.496z"
-                data-original="#03a9f4" />
-        </svg>
-    </a>
-    <a href="javascript:void(0)"
-        class="w-7 h-7 inline-flex items-center justify-center rounded-full border-none outline-none bg-[#0077b5] hover:bg-[#0055b5] active:bg-[#0077b5]">
-        <svg xmlns="http://www.w3.org/2000/svg" width="14px" fill="#fff" viewBox="0 0 24 24">
-            <path
-                d="M23.994 24v-.001H24v-8.802c0-4.306-.927-7.623-5.961-7.623-2.42 0-4.044 1.328-4.707 2.587h-.07V7.976H8.489v16.023h4.97v-7.934c0-2.089.396-4.109 2.983-4.109 2.549 0 2.587 2.384 2.587 4.243V24zM.396 7.977h4.976V24H.396zM2.882 0C1.291 0 0 1.291 0 2.882s1.291 2.909 2.882 2.909 2.882-1.318 2.882-2.909A2.884 2.884 0 0 0 2.882 0z"
-                data-original="#0077b5" />
-        </svg>
-    </a>
-</div>
+                <!-- Première div : Icônes Sociales -->
+                <div class="space-x-3 mt-8 flex items-center">
+                    <a href="javascript:void(0)"
+                        class="w-7 h-7 inline-flex items-center justify-center rounded-full border-none outline-none bg-blue-600 hover:bg-blue-700 active:bg-blue-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14px" fill="#fff" viewBox="0 0 155.139 155.139">
+                            <path
+                                d="M89.584 155.139V84.378h23.742l3.562-27.585H89.584V39.184c0-7.984 2.208-13.425 13.67-13.425l14.595-.006V1.08C115.325.752 106.661 0 96.577 0 75.52 0 61.104 12.853 61.104 36.452v20.341H37.29v27.585h23.814v70.761h28.48z"
+                                data-original="#010002" />
+                        </svg>
+                    </a>
+                    <a href="javascript:void(0)"
+                        class="w-7 h-7 inline-flex items-center justify-center rounded-full border-none outline-none bg-[#03a9f4] hover:bg-[#03a1f4] active:bg-[#03a9f4]">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14px" fill="#fff" viewBox="0 0 512 512">
+                            <path
+                                d="M512 97.248c-19.04 8.352-39.328 13.888-60.48 16.576 21.76-12.992 38.368-33.408 46.176-58.016-20.288 12.096-42.688 20.64-66.56 25.408C411.872 60.704 384.416 48 354.464 48c-58.112 0-104.896 47.168-104.896 104.992 0 8.32.704 16.32 2.432 23.936-87.264-4.256-164.48-46.08-216.352-109.792-9.056 15.712-14.368 33.696-14.368 53.056 0 36.352 18.72 68.576 46.624 87.232-16.864-.32-33.408-5.216-47.424-12.928v1.152c0 51.008 36.384 93.376 84.096 103.136-8.544 2.336-17.856 3.456-27.52 3.456-6.72 0-13.504-.384-19.872-1.792 13.6 41.568 52.192 72.128 98.08 73.12-35.712 27.936-81.056 44.768-130.144 44.768-8.608 0-16.864-.384-25.12-1.44C46.496 446.88 101.6 464 161.024 464c193.152 0 298.752-160 298.752-298.688 0-4.64-.16-9.12-.384-13.568 20.832-14.784 38.336-33.248 52.608-54.496z"
+                                data-original="#03a9f4" />
+                        </svg>
+                    </a>
+                    <a href="javascript:void(0)"
+                        class="w-7 h-7 inline-flex items-center justify-center rounded-full border-none outline-none bg-[#0077b5] hover:bg-[#0055b5] active:bg-[#0077b5]">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14px" fill="#fff" viewBox="0 0 24 24">
+                            <path
+                                d="M23.994 24v-.001H24v-8.802c0-4.306-.927-7.623-5.961-7.623-2.42 0-4.044 1.328-4.707 2.587h-.07V7.976H8.489v16.023h4.97v-7.934c0-2.089.396-4.109 2.983-4.109 2.549 0 2.587 2.384 2.587 4.243V24zM.396 7.977h4.976V24H.396zM2.882 0C1.291 0 0 1.291 0 2.882s1.291 2.909 2.882 2.909 2.882-1.318 2.882-2.909A2.884 2.884 0 0 0 2.882 0z"
+                                data-original="#0077b5" />
+                        </svg>
+                    </a>
+                </div>
 
-<!-- Deuxième div : Bouton Like -->
-<div
-    class="font-[sans-serif] bg-white border-2 divide-x-2  mt-4 flex rounded overflow-hidden mt-14">
-    <button type="button"
-        class="px-5 py-2.5 flex items-center text-[#333] text-sm tracking-wider font-semibold outline-none hover:bg-gray-50 transition-all">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-2" viewBox="0 0 512 512">
-            <path fill="#f9595f"
-                d="M449.28 121.43a115.2 115.2 0 0 0-137.89-35.75c-21.18 9.14-40.07 24.55-55.39 45-15.32-20.5-34.21-35.91-55.39-45a115.2 115.2 0 0 0-137.89 35.75c-16.5 21.62-25.22 48.64-25.22 78.13 0 42.44 25.31 89 75.22 138.44 40.67 40.27 88.73 73.25 113.75 89.32a54.78 54.78 0 0 0 59.06 0c25-16.07 73.08-49.05 113.75-89.32 49.91-49.42 75.22-96 75.22-138.44 0-29.49-8.72-56.51-25.22-78.13z" />
-        </svg>
-        Like
-    </button>
-    <button type="button"
-        class="px-5 py-2.5 flex items-center text-[#333] text-sm tracking-wider font-semibold outline-none hover:bg-gray-50 transition-all">
-        200
-    </button>
-</div>
-</div>
+                <!-- Deuxième div : Bouton Like -->
+                <div class="font-[sans-serif] bg-white border-2 divide-x-2 mt-4 flex rounded overflow-hidden mt-14">
+                    <!-- Bouton Like -->
+                    <button type="button" id="likeButton"
+                        class="px-5 py-2.5 flex items-center text-[#333] text-sm tracking-wider font-semibold outline-none hover:bg-gray-50 transition-all">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-2" viewBox="0 0 512 512">
+                            <path fill="#f9595f"
+                                d="M449.28 121.43a115.2 115.2 0 0 0-137.89-35.75c-21.18 9.14-40.07 24.55-55.39 45-15.32-20.5-34.21-35.91-55.39-45a115.2 115.2 0 0 0-137.89 35.75c-16.5 21.62-25.22 48.64-25.22 78.13 0 42.44 25.31 89 75.22 138.44 40.67 40.27 88.73 73.25 113.75 89.32a54.78 54.78 0 0 0 59.06 0c25-16.07 73.08-49.05 113.75-89.32 49.91-49.42 75.22-96 75.22-138.44 0-29.49-8.72-56.51-25.22-78.13z" />
+                        </svg>
+                        Like
+                    </button>
+
+                    <!-- Nombre de Likes -->
+                    <button type="button" id="likeCountButton"
+                        class="px-5 py-2.5 flex items-center text-[#333] text-sm tracking-wider font-semibold outline-none hover:bg-gray-50 transition-all">
+                        200
+                    </button>
+
+                    <button id="openModal"><i class="fa-solid fa-comment fa-2x" style="color: #0a0a0a;"></i></button>
+                </div>
+            </div>
 
         </div>
     </div>
+
+
+    <!-- COMMENTAIRES -->
+
+    <div class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center hidden" id="commentModal">
+        <div class="bg-white rounded-lg w-11/12 max-w-lg p-6 shadow-lg">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-semibold">Commentaires</h2>
+                <button id="closeModal" class="text-red-500 hover:text-red-700">&times;</button>
+            </div>
+            <div class="comments-list border border-gray-300 rounded-md p-4 h-48 overflow-y-auto mb-4" id="commentsList">
+                <!-- Les commentaires seront ajoutés ici -->
+            </div>
+            <form action="./ajouter_commentaire.php" method="post">
+                <div class="flex items-center space-x-2">
+                    <input type="text" id="newComment" name="content" placeholder="Ajouter un commentaire" class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <input type="hidden" id="articleId" name="article_id" value="<?php echo $article_id; ?>"> <!-- Champ caché pour l'ID de l'article -->
+                    <button id="addComment" class="p-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition" type="submit">Ajouter</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Récupérer les commentaires du PHP et afficher dans la modal
+    const comments = <?php echo $comments_json; ?>;
+        console.log(comments);
+      
+        document.addEventListener('DOMContentLoaded', () => {
+            const commentsList = document.querySelector('#commentsList');
+
+            // Afficher les commentaires dans la modal
+            comments.forEach(comment => {
+                const commentDiv = document.createElement('div');
+                commentDiv.classList.add('comment', 'mb-4', 'p-4', 'bg-gray-100', 'rounded-md', 'shadow-md', 'border', 'border-gray-300');
+               
+
+                const commentDate = (comment.created_at === comment.updated_at) ?
+                    `Créé le : ${new Date(comment.created_at).toLocaleString()}` :
+                    `Modifié le : ${new Date(comment.updated_at).toLocaleString()}`;
+
+                commentDiv.innerHTML = `
+            <p><strong>${comment.user_name}</strong> - ${commentDate}</p>
+            <p>${comment.content}</p>
+        `;
+
+                commentsList.appendChild(commentDiv);
+            });
+        });
+    </script>
 
     <!-- footer -->
     <footer class="font-sans tracking-wide bg-gray-50 px-10 pt-12 pb-6">
@@ -304,6 +429,8 @@
             <p class='text-gray-600 text-sm md:ml-auto'>© ReadymadeUI. All rights reserved.</p>
         </div>
     </footer>
+    <script src="../view/app.js"></script>
+
 </body>
 
 </html>
