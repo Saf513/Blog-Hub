@@ -13,56 +13,53 @@ if (isset($_GET['id'])) {
     JOIN users u ON c.user_id = u.id
     WHERE c.article_id = ?");
 
-// Vérifier si la préparation a échoué
-if ($stmt === false) {
-echo "Erreur dans la préparation de la requête : " . $conn->error;
-exit;
+    // Vérifier si la préparation a échoué
+    if ($stmt === false) {
+        echo "Erreur dans la préparation de la requête : " . $conn->error;
+        exit;
+    }
+
+    // Lier le paramètre à la requête préparée
+    $stmt->bind_param("i", $article_id);
+
+    // Exécuter la requête
+    if (!$stmt->execute()) {
+        echo "Erreur lors de l'exécution de la requête : " . $stmt->error;
+        exit;
+    }
+
+    // Récupérer les résultats de la requête
+    $result = $stmt->get_result();
+
+    // Vérifier si la récupération des résultats a échoué
+    if ($result === false) {
+        echo "Erreur lors de la récupération des résultats : " . $stmt->error;
+        exit;
+    }
+
+    // Tableau pour stocker les commentaires
+    $comments = [];
+
+    // Vérifier s'il y a des résultats
+    if ($result->num_rows > 0) {
+        // Parcourir les résultats
+        while ($row = $result->fetch_assoc()) {
+            $comments[] = [
+                'user_name' => $row['user_name'],
+                'content' => $row['content'],
+                'created_at' => $row['created_at'],
+                // Assurez-vous que `updated_at` existe dans la requête SQL
+                'updated_at' => isset($row['updated_at']) ? $row['updated_at'] : null,
+            ];
+        }
+        $comments_json = json_encode($comments);
+    } else {
+        echo "Aucun commentaire trouvé pour cet article.";
+    }
+
+    // Fermer la requête préparée
+    $stmt->close();
 }
-
-// Lier le paramètre à la requête préparée
-$stmt->bind_param("i", $article_id);
-
-// Exécuter la requête
-if (!$stmt->execute()) {
-echo "Erreur lors de l'exécution de la requête : " . $stmt->error;
-exit;
-}
-
-// Récupérer les résultats de la requête
-$result = $stmt->get_result();
-
-// Vérifier si la récupération des résultats a échoué
-if ($result === false) {
-echo "Erreur lors de la récupération des résultats : " . $stmt->error;
-exit;
-}
-
-// Tableau pour stocker les commentaires
-$comments = [];
-
-// Vérifier s'il y a des résultats
-if ($result->num_rows > 0) {
-// Parcourir les résultats
-while ($row = $result->fetch_assoc()) {
-$comments[] = [
-'user_name' => $row['user_name'],
-'content' => $row['content'],
-'created_at' => $row['created_at'],
-// Assurez-vous que `updated_at` existe dans la requête SQL
-'updated_at' => isset($row['updated_at']) ? $row['updated_at'] : null,
-];
-}
-$comments_json = json_encode($comments);
-
-} else {
-echo "Aucun commentaire trouvé pour cet article.";
-}
-
-// Fermer la requête préparée
-$stmt->close();
-
-
-$requete="select "}
 ?>
 
 
@@ -124,7 +121,7 @@ $requete="select "}
                 </ul>
             </div>
 
-            <div class="flex items-center space-x-4">
+           
                 <?php
                 if (isset($_SESSION['token']) && $user) {
                     echo "<p class='text-gray-700'>Bonjour, " . htmlspecialchars($user['username']) . "</p>";
@@ -134,6 +131,11 @@ $requete="select "}
                     echo '<a href="/authentification/inscreption.php" class="px-4 py-2 text-sm rounded-full font-bold text-white border-2 border-[#007bff] bg-[#007bff] hover:bg-transparent hover:text-[#007bff]">Sign Up</a>';
                 }
                 ?>
+                 <div class="flex items-center space-x-4">
+            <div class="relative inline-block">
+        <img src="https://avf.asso.fr/guipavas/wp-content/uploads/sites/153/2020/09/92979836-ic%C3%B4ne-de-visage-anonyme-de-profil-personne-silhouette-grise-avatar-par-d%C3%A9faut-masculin-photo-placeholder--300x300.jpg" class="w-14 h-14 rounded-full" />
+        <span class="h-3 w-3 rounded-full border border-white bg-green-500 block absolute bottom-1 right-0"></span>
+      </div>
                 <button id="toggleOpen" class="lg:hidden">
                     <svg class="w-7 h-7" fill="#000" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                         <path fill-rule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"></path>
@@ -145,77 +147,113 @@ $requete="select "}
 
 
     <!-- body content -->
-    <div class="grid sm:grid-cols-2 items-center gap-8 font-[sans-serif] max-w-5xl max-sm:max-w-sm mx-auto p-4">
-        <div class="sm:h-[400px]">
-            <img src="https://readymadeui.com/team-2.webp" class="w-full h-full object-contain" />
+    <?php
+    $stmt = $conn->prepare("SELECT * FROM articles WHERE id = ?");
+    $stmt->bind_param('i', $article_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    if (!$result) {
+        die('Erreur dans la requête : ' . $conn->error);
+    }
+
+if ($result->num_rows > 0) {
+    $article = $result->fetch_assoc();
+
+    // Variables dynamiques
+    $title = htmlspecialchars($article['title']);
+    $content = htmlspecialchars($article['content']);
+    $created_at = htmlspecialchars($article['created_at']);
+    $image_url = htmlspecialchars($article['image_url']);
+    $user_id = htmlspecialchars($article['user_id']);
+
+
+    $likes = intval($article['like']); // Nombre de likes (optionnel)
+    $user_query = "SELECT username FROM users WHERE id = $user_id";
+    $user_result = $conn->query($user_query);
+    $username = $user_result && $user_result->num_rows > 0
+        ? htmlspecialchars($user_result->fetch_assoc()['username'])
+        : 'Utilisateur inconnu';
+
+    echo "
+    <div class='grid sm:grid-cols-2 items-center gap-8 font-[sans-serif] max-w-5xl max-sm:max-w-sm mx-auto p-4'>
+        <div class='sm:h-[400px] flex'>
+<div class='relative font-[sans-serif] w-max mx-auto'>
+      <button type='button' id='dropdownToggle'
+        class='px-5 py-2.5 border border-gray-300 text-gray-800 text-sm outline-none bg-white hover:bg-gray-50'>
+        
+                            <p id='edit_pub' ><i class='fa-solid fa-ellipsis fa-flip-both fa-2x' style='color: #000000;'></i></p>
+
+      </button>
+
+      <ul id='dropdownMenu' class='absolute hidden shadow-[0_8px_19px_-7px_rgba(6,81,237,0.2)] bg-white py-2 z-[1000] min-w-full w-max divide-y max-h-96 overflow-auto'>
+        <li class='py-3 px-5 hover:bg-gray-50 text-gray-800 text-sm cursor-pointer'>Supprimmer</li>
+        <li class='py-3 px-5 hover:bg-gray-50 text-gray-800 text-sm cursor-pointer'><a href='../users/modifierArticle.php?article_id=$article_id'>Modifier l'article</a>
+
+ </li>
+        <li class='py-3 px-5 hover:bg-gray-50 text-gray-800 text-sm cursor-pointer'>desactiver commentaire</li>
+        <li class='py-3 px-5 hover:bg-gray-50 text-gray-800 text-sm cursor-pointer'>Archiver</li>
+      </ul>
+    </div>
+            <img src='../users/$image_url' class='w-full h-full object-contain' alt='Image de l'article' />
         </div>
 
         <div>
-            <h3 class="text-xl font-extrabold text-gray-800">Exceptional Service: Prompt Delivery and Enjoyable Dining Experience.</h3>
-            <p class="mt-4 text-sm text-gray-800">The service was amazing. I never had to wait that long for my food. The staff was friendly and attentive, and the delivery was impressively prompt.</p>
+            <h3 class='text-xl font-extrabold text-gray-800'>$title</h3>
+            <p class='mt-4 text-sm text-gray-800'>$content</p>
 
-            <div class="mt-8 text-left">
-                <h4 class="text-base font-bold">Mark Adair</h4>
-                <p class="text-xs text-gray-500 mt-0.5">markadair23@gmail.com</p>
+            <div class='mt-8 text-left'>
+                <h4 class='text-base font-bold'>$username</h4>
             </div>
-            <!-- icon -->
 
-
-            <div class="flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0 md:space-x-8">
-
-                <!-- Première div : Icônes Sociales -->
-                <div class="space-x-3 mt-8 flex items-center">
-                    <a href="javascript:void(0)"
-                        class="w-7 h-7 inline-flex items-center justify-center rounded-full border-none outline-none bg-blue-600 hover:bg-blue-700 active:bg-blue-600">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14px" fill="#fff" viewBox="0 0 155.139 155.139">
-                            <path
-                                d="M89.584 155.139V84.378h23.742l3.562-27.585H89.584V39.184c0-7.984 2.208-13.425 13.67-13.425l14.595-.006V1.08C115.325.752 106.661 0 96.577 0 75.52 0 61.104 12.853 61.104 36.452v20.341H37.29v27.585h23.814v70.761h28.48z"
-                                data-original="#010002" />
+            <div class='flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0 md:space-x-8'>
+                <!-- Icônes sociales -->
+                <div class='space-x-3 mt-8 flex items-center'>
+                    <a href='javascript:void(0)'
+                        class='w-7 h-7 inline-flex items-center justify-center rounded-full bg-blue-600 hover:bg-blue-700'>
+                        <svg xmlns='http://www.w3.org/2000/svg' width='14px' fill='#fff' viewBox='0 0 155.139 155.139'>
+                            <path d='M89.584 155.139V84.378h23.742l3.562-27.585H89.584V39.184c0-7.984 2.208-13.425 13.67-13.425l14.595-.006V1.08C115.325.752 106.661 0 96.577 0 75.52 0 61.104 12.853 61.104 36.452v20.341H37.29v27.585h23.814v70.761h28.48z'></path>
                         </svg>
                     </a>
-                    <a href="javascript:void(0)"
-                        class="w-7 h-7 inline-flex items-center justify-center rounded-full border-none outline-none bg-[#03a9f4] hover:bg-[#03a1f4] active:bg-[#03a9f4]">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14px" fill="#fff" viewBox="0 0 512 512">
-                            <path
-                                d="M512 97.248c-19.04 8.352-39.328 13.888-60.48 16.576 21.76-12.992 38.368-33.408 46.176-58.016-20.288 12.096-42.688 20.64-66.56 25.408C411.872 60.704 384.416 48 354.464 48c-58.112 0-104.896 47.168-104.896 104.992 0 8.32.704 16.32 2.432 23.936-87.264-4.256-164.48-46.08-216.352-109.792-9.056 15.712-14.368 33.696-14.368 53.056 0 36.352 18.72 68.576 46.624 87.232-16.864-.32-33.408-5.216-47.424-12.928v1.152c0 51.008 36.384 93.376 84.096 103.136-8.544 2.336-17.856 3.456-27.52 3.456-6.72 0-13.504-.384-19.872-1.792 13.6 41.568 52.192 72.128 98.08 73.12-35.712 27.936-81.056 44.768-130.144 44.768-8.608 0-16.864-.384-25.12-1.44C46.496 446.88 101.6 464 161.024 464c193.152 0 298.752-160 298.752-298.688 0-4.64-.16-9.12-.384-13.568 20.832-14.784 38.336-33.248 52.608-54.496z"
-                                data-original="#03a9f4" />
+                    <a href='javascript:void(0)'
+                        class='w-7 h-7 inline-flex items-center justify-center rounded-full bg-[#03a9f4] hover:bg-[#03a1f4]'>
+                        <svg xmlns='http://www.w3.org/2000/svg' width='14px' fill='#fff' viewBox='0 0 512 512'>
+                            <path d='M512 97.248c-19.04 8.352-39.328 13.888-60.48 16.576 21.76-12.992 38.368-33.408 46.176-58.016-20.288 12.096-42.688 20.64-66.56 25.408C411.872 60.704 384.416 48 354.464 48c-58.112 0-104.896 47.168-104.896 104.992 0 8.32.704 16.32 2.432 23.936-87.264-4.256-164.48-46.08-216.352-109.792-9.056 15.712-14.368 33.696-14.368 53.056 0 36.352 18.72 68.576 46.624 87.232-16.864-.32-33.408-5.216-47.424-12.928v1.152c0 51.008 36.384 93.376 84.096 103.136-8.544 2.336-17.856 3.456-27.52 3.456-6.72 0-13.504-.384-19.872-1.792 13.6 41.568 52.192 72.128 98.08 73.12-35.712 27.936-81.056 44.768-130.144 44.768-8.608 0-16.864-.384-25.12-1.44C46.496 446.88 101.6 464 161.024 464c193.152 0 298.752-160 298.752-298.688 0-4.64-.16-9.12-.384-13.568 20.832-14.784 38.336-33.248 52.608-54.496z'></path>
                         </svg>
                     </a>
-                    <a href="javascript:void(0)"
-                        class="w-7 h-7 inline-flex items-center justify-center rounded-full border-none outline-none bg-[#0077b5] hover:bg-[#0055b5] active:bg-[#0077b5]">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14px" fill="#fff" viewBox="0 0 24 24">
-                            <path
-                                d="M23.994 24v-.001H24v-8.802c0-4.306-.927-7.623-5.961-7.623-2.42 0-4.044 1.328-4.707 2.587h-.07V7.976H8.489v16.023h4.97v-7.934c0-2.089.396-4.109 2.983-4.109 2.549 0 2.587 2.384 2.587 4.243V24zM.396 7.977h4.976V24H.396zM2.882 0C1.291 0 0 1.291 0 2.882s1.291 2.909 2.882 2.909 2.882-1.318 2.882-2.909A2.884 2.884 0 0 0 2.882 0z"
-                                data-original="#0077b5" />
+                    <a href='javascript:void(0)'
+                        class='w-7 h-7 inline-flex items-center justify-center rounded-full bg-[#03a9f4] hover:bg-[#03a1f4]'>
+                        <svg xmlns='http://www.w3.org/2000/svg' width='14px' fill='#fff' viewBox='0 0 512 512'>
+                            <path d='M512 97.248c-19.04 8.352-39.328 13.888-60.48 16.576 21.76-12.992 38.368-33.408 46.176-58.016-20.288 12.096-42.688 20.64-66.56 25.408C411.872 60.704 384.416 48 354.464 48c-58.112 0-104.896 47.168-104.896 104.992 0 8.32.704 16.32 2.432 23.936-87.264-4.256-164.48-46.08-216.352-109.792-9.056 15.712-14.368 33.696-14.368 53.056 0 36.352 18.72 68.576 46.624 87.232-16.864-.32-33.408-5.216-47.424-12.928v1.152c0 51.008 36.384 93.376 84.096 103.136-8.544 2.336-17.856 3.456-27.52 3.456-6.72 0-13.504-.384-19.872-1.792 13.6 41.568 52.192 72.128 98.08 73.12-35.712 27.936-81.056 44.768-130.144 44.768-8.608 0-16.864-.384-25.12-1.44C46.496 446.88 101.6 464 161.024 464c193.152 0 298.752-160 298.752-298.688 0-4.64-.16-9.12-.384-13.568 20.832-14.784 38.336-33.248 52.608-54.496z'></path>
                         </svg>
                     </a>
+                   
+                
                 </div>
 
-                <!-- Deuxième div : Bouton Like -->
-                <div class="font-[sans-serif] bg-white border-2 divide-x-2 mt-4 flex rounded overflow-hidden mt-14">
-                    <!-- Bouton Like -->
-                    <button type="button" id="likeButton"
-                        class="px-5 py-2.5 flex items-center text-[#333] text-sm tracking-wider font-semibold outline-none hover:bg-gray-50 transition-all">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-2" viewBox="0 0 512 512">
-                            <path fill="#f9595f"
-                                d="M449.28 121.43a115.2 115.2 0 0 0-137.89-35.75c-21.18 9.14-40.07 24.55-55.39 45-15.32-20.5-34.21-35.91-55.39-45a115.2 115.2 0 0 0-137.89 35.75c-16.5 21.62-25.22 48.64-25.22 78.13 0 42.44 25.31 89 75.22 138.44 40.67 40.27 88.73 73.25 113.75 89.32a54.78 54.78 0 0 0 59.06 0c25-16.07 73.08-49.05 113.75-89.32 49.91-49.42 75.22-96 75.22-138.44 0-29.49-8.72-56.51-25.22-78.13z" />
+                <!-- Bouton Like -->
+                <div class='font-[sans-serif] bg-white border-2 divide-x-2 mt-4 flex rounded overflow-hidden'>
+                    <button type='button' id='likeButton'
+                        class='px-5 py-2.5 flex items-center text-[#333] text-sm tracking-wider font-semibold'>
+                        <svg xmlns='http://www.w3.org/2000/svg' class='w-5 h-5 mr-2' viewBox='0 0 512 512'>
+                            <path fill='#f9595f' d='M449.28 121.43a115.2 115.2 0 0 0-137.89-35.75c-21.18 9.14-40.07 24.55-55.39 45-15.32-20.5-34.21-35.91-55.39-45a115.2 115.2 0 0 0-137.89 35.75c-16.5 21.62-25.22 48.64-25.22 78.13 0 42.44 25.31 89 75.22 138.44 40.67 40.27 88.73 73.25 113.75 89.32a54.78 54.78 0 0 0 59.06 0c25-16.07 73.08-49.05 113.75-89.32 49.91-49.42 75.22-96 75.22-138.44 0-29.49-8.72-56.51-25.22-78.13z'></path>
                         </svg>
                         Like
                     </button>
-
-                    <!-- Nombre de Likes -->
-                    <button type="button" id="likeCountButton"
-                        class="px-5 py-2.5 flex items-center text-[#333] text-sm tracking-wider font-semibold outline-none hover:bg-gray-50 transition-all">
-                        200
-                    </button>
-
-                    <button id="openModal"><i class="fa-solid fa-comment fa-2x" style="color: #0a0a0a;"></i></button>
+                    <button type='button' id='likeCountButton' class='px-5 py-2.5'>$likes</button>
+                       <button id='openModal' ><i class='fa-solid fa-comment fa-2x' style='color: #0a0a0a;'></i></button>
+                </div>
                 </div>
             </div>
-
         </div>
-    </div>
+    </div>";
+} else {
+    echo "<p>Aucun article trouvé avec cet ID.</p>";
+}
+?>
 
+
+
+   
 
     <!-- COMMENTAIRES -->
 
@@ -240,9 +278,9 @@ $requete="select "}
 
     <script>
         // Récupérer les commentaires du PHP et afficher dans la modal
-    const comments = <?php echo $comments_json; ?>;
+        const comments = <?php echo $comments_json; ?>;
         console.log(comments);
-      
+
         document.addEventListener('DOMContentLoaded', () => {
             const commentsList = document.querySelector('#commentsList');
 
@@ -250,7 +288,7 @@ $requete="select "}
             comments.forEach(comment => {
                 const commentDiv = document.createElement('div');
                 commentDiv.classList.add('comment', 'mb-4', 'p-4', 'bg-gray-100', 'rounded-md', 'shadow-md', 'border', 'border-gray-300');
-               
+
 
                 const commentDate = (comment.created_at === comment.updated_at) ?
                     `Créé le : ${new Date(comment.created_at).toLocaleString()}` :

@@ -1,60 +1,38 @@
-// const btn=document.querySelector('#toggleOpen');
-// const burgerMenu = document.getElementById("burger-menu");
-// const closeBtn = document.getElementById("close-btn");
+document.addEventListener('DOMContentLoaded', () => {
+    // header
+    var toggleOpen = document.getElementById('toggleOpen');
+    var toggleClose = document.getElementById('toggleClose');
+    var collapseMenu = document.getElementById('collapseMenu');
 
-// // Ouvrir le menu
-// btn.addEventListener("click", () => {
-//     burgerMenu.classList.remove("hidden");
-// });
+    function handleClick() {
+      if (collapseMenu.style.display === 'block') {
+        collapseMenu.style.display = 'none';
+      } else {
+        collapseMenu.style.display = 'block';
+      }
+    }
 
-// // Fermer le menu
-// // closeBtn.addEventListener("click", () => {
-// //     burgerMenu.classList.add("hidden");
-// // });
+    toggleOpen.addEventListener('click', handleClick);
+    toggleClose.addEventListener('click', handleClick);
 
-// // Fermer le menu si on clique en dehors
-// burgerMenu.addEventListener("click", (e) => {
-//     if (e.target === burgerMenu) {
-//         burgerMenu.classList.add("hidden");
-//     }
-// });
+    // sidebar
+    let sidebarToggleBtn = document.getElementById('toggle-sidebar');
+    let sidebar = document.getElementById('sidebar');
+    let sidebarCollapseMenu = document.getElementById('sidebar-collapse-menu');
 
+    sidebarToggleBtn.addEventListener('click', () => {
+      if (!sidebarCollapseMenu.classList.contains('open')) {
+          sidebarCollapseMenu.classList.add('open');
+          sidebarCollapseMenu.style.cssText = 'width: 250px; visibility: visible; opacity: 1;';
+          sidebarToggleBtn.style.cssText = 'left: 236px;';
+      } else {
+          sidebarCollapseMenu.classList.remove('open');
+          sidebarCollapseMenu.style.cssText = 'width: 32px; visibility: hidden; opacity: 0;';
+          sidebarToggleBtn.style.cssText = 'left: 10px;';
+      }
 
-// document.addEventListener('DOMContentLoaded', () => {
-//     // header
-//     var toggleOpen = document.getElementById('toggleOpen');
-//     var toggleClose = document.getElementById('toggleClose');
-//     var collapseMenu = document.getElementById('collapseMenu');
-
-//     function handleClick() {
-//       if (collapseMenu.style.display === 'block') {
-//         collapseMenu.style.display = 'none';
-//       } else {
-//         collapseMenu.style.display = 'block';
-//       }
-//     }
-
-//     toggleOpen.addEventListener('click', handleClick);
-//     toggleClose.addEventListener('click', handleClick);
-
-//     // sidebar
-//     let sidebarToggleBtn = document.getElementById('toggle-sidebar');
-//     let sidebar = document.getElementById('sidebar');
-//     let sidebarCollapseMenu = document.getElementById('sidebar-collapse-menu');
-
-//     sidebarToggleBtn.addEventListener('click', () => {
-//       if (!sidebarCollapseMenu.classList.contains('open')) {
-//           sidebarCollapseMenu.classList.add('open');
-//           sidebarCollapseMenu.style.cssText = 'width: 250px; visibility: visible; opacity: 1;';
-//           sidebarToggleBtn.style.cssText = 'left: 236px;';
-//       } else {
-//           sidebarCollapseMenu.classList.remove('open');
-//           sidebarCollapseMenu.style.cssText = 'width: 32px; visibility: hidden; opacity: 0;';
-//           sidebarToggleBtn.style.cssText = 'left: 10px;';
-//       }
-
-//     });
-//   });
+    });
+  });
 
 function handleTagInput(event) {
     const tagInput = document.getElementById('tag-input');
@@ -133,7 +111,7 @@ document.addEventListener('DOMContentLoaded', function () {
 // const commentsList = document.getElementById('commentsList');
 const commentModal = document.getElementById('commentModal');
 const closeModalButton = document.getElementById('closeModal');
-const openModal= document.getElementById('openModal');
+const openModal = document.getElementById('openModal');
 // const articleId = document.getElementById('articleId').value;
 
 // // Lorsque l'utilisateur clique sur "Ajouter"
@@ -206,33 +184,33 @@ document.addEventListener('DOMContentLoaded', () => {
             method: 'POST',
             body: formData
         })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                // Ajouter le commentaire dans la liste de la modal
-                const commentsList = document.querySelector('#commentsList');
-                const commentDiv = document.createElement('div');
-                commentDiv.classList.add('comment', 'mb-4', 'p-4', 'bg-gray-100', 'rounded-md', 'shadow-md', 'border', 'border-gray-300');
-                
-                const commentDate = `Créé le : ${new Date(data.created_at).toLocaleString()}`;
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Ajouter le commentaire dans la liste de la modal
+                    const commentsList = document.querySelector('#commentsList');
+                    const commentDiv = document.createElement('div');
+                    commentDiv.classList.add('comment', 'mb-4', 'p-4', 'bg-gray-100', 'rounded-md', 'shadow-md', 'border', 'border-gray-300');
 
-                commentDiv.innerHTML = `
+                    const commentDate = `Créé le : ${new Date(data.created_at).toLocaleString()}`;
+
+                    commentDiv.innerHTML = `
                     <p><strong>${data.user_name}</strong> - <span class="text-sm text-gray-500">${commentDate}</span></p>
                     <p class="mt-2 text-gray-700">${data.content}</p>
                 `;
 
-                // Ajouter le nouveau commentaire dans la modal
-                commentsList.appendChild(commentDiv);
+                    // Ajouter le nouveau commentaire dans la modal
+                    commentsList.appendChild(commentDiv);
 
-                // Réinitialiser le champ de saisie du commentaire
-                document.getElementById('newComment').value = '';
-            } else {
-                alert('Erreur : ' + data.message);
-            }
-        })
-        .catch(error => {
-            console.error('Erreur lors de l\'ajout du commentaire:', error);
-        });
+                    // Réinitialiser le champ de saisie du commentaire
+                    document.getElementById('newComment').value = '';
+                } else {
+                    alert('Erreur : ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Erreur lors de l\'ajout du commentaire:', error);
+            });
     }
 
     // Ajouter l'événement d'ajout de commentaire
@@ -241,3 +219,19 @@ document.addEventListener('DOMContentLoaded', () => {
         addComment();
     });
 });
+
+//EDITER UNE PUBLICATION 
+let dropdownToggle = document.getElementById('dropdownToggle');
+let dropdownMenu = document.getElementById('dropdownMenu');
+
+function handleClick() {
+    if (dropdownMenu.className.includes('block')) {
+        dropdownMenu.classList.add('hidden')
+        dropdownMenu.classList.remove('block')
+    } else {
+        dropdownMenu.classList.add('block')
+        dropdownMenu.classList.remove('hidden')
+    }
+}
+
+dropdownToggle.addEventListener('click', handleClick);
