@@ -8,7 +8,7 @@ if (isset($_GET['id'])) {
     $article_id = $_GET['id'];
 
     // Préparer la requête pour récupérer les commentaires
-    $stmt = $conn->prepare("SELECT c.content, c.created_at ,  u.username AS user_name
+    $stmt = $conn->prepare("SELECT c.content, c.created_at ,c.id,  u.username AS user_name
     FROM comments c
     JOIN users u ON c.user_id = u.id
     WHERE c.article_id = ?");
@@ -45,16 +45,14 @@ if (isset($_GET['id'])) {
         // Parcourir les résultats
         while ($row = $result->fetch_assoc()) {
             $comments[] = [
+                'id'=> $row['user_name'],
                 'user_name' => $row['user_name'],
                 'content' => $row['content'],
                 'created_at' => $row['created_at'],
-                // Assurez-vous que `updated_at` existe dans la requête SQL
                 'updated_at' => isset($row['updated_at']) ? $row['updated_at'] : null,
             ];
         }
         $comments_json = json_encode($comments);
-    } else {
-        echo "Aucun commentaire trouvé pour cet article.";
     }
 
     // Fermer la requête préparée
@@ -77,65 +75,46 @@ if (isset($_GET['id'])) {
 </head>
 
 <body>
-    <header class='flex shadow-md py-4 px-4 sm:px-10 bg-white font-[sans-serif] min-h-[70px] tracking-wide relative z-50'>
-        <div class='flex flex-wrap items-center justify-between gap-5 w-full'>
-            <a href="javascript:void(0)"><img src="/IMG/BLOG HUB (1) (1).png" style="width: 100px; height: max-content ; display: block;" alt="logo" class='w-36' />
+<header class="flex shadow-md py-4 px-4 sm:px-10 bg-white font-[sans-serif] min-h-[70px] tracking-wide relative z-50">
+        <div class="flex flex-wrap items-center justify-between gap-5 w-full">
+            <a href="/">
+                <img src="/IMG/BLOG HUB (1) (1).png" alt="logo" class="w-36" style="width: 100px; height: auto;">
             </a>
-
-            <div id="collapseMenu"
-                class='max-lg:hidden lg:!block max-lg:before:fixed max-lg:before:bg-black max-lg:before:opacity-50 max-lg:before:inset-0 max-lg:before:z-50'>
-                <button id="toggleClose" class='lg:hidden fixed top-2 right-4 z-[100] rounded-full bg-white w-9 h-9 flex items-center justify-center border'>
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 fill-black" viewBox="0 0 320.591 320.591">
-                        <path
-                            d="M30.391 318.583a30.37 30.37 0 0 1-21.56-7.288c-11.774-11.844-11.774-30.973 0-42.817L266.643 10.665c12.246-11.459 31.462-10.822 42.921 1.424 10.362 11.074 10.966 28.095 1.414 39.875L51.647 311.295a30.366 30.366 0 0 1-21.256 7.288z"
-                            data-original="#000000"></path>
-                        <path
-                            d="M287.9 318.583a30.37 30.37 0 0 1-21.257-8.806L8.83 51.963C-2.078 39.225-.595 20.055 12.143 9.146c11.369-9.736 28.136-9.736 39.504 0l259.331 257.813c12.243 11.462 12.876 30.679 1.414 42.922-.456.487-.927.958-1.414 1.414a30.368 30.368 0 0 1-23.078 7.288z"
-                            data-original="#000000"></path>
-                    </svg>
-                </button>
-
-                <ul
-                    class='lg:flex gap-x-5 max-lg:space-y-3 max-lg:fixed max-lg:bg-white max-lg:w-1/2 max-lg:min-w-[300px] max-lg:top-0 max-lg:left-0 max-lg:p-6 max-lg:h-full max-lg:shadow-md max-lg:overflow-auto z-50'>
-                    <li class='mb-6 hidden max-lg:block'>
-                        <a href="/index.php"><img src="/IMG/BLOG HUB.svg" class="w-32 h-32 object-contain" alt="logo" class='w-36' />
-                        </a>
-                    </li>
-                    <li class='max-lg:border-b border-gray-300 max-lg:py-3 px-3'>
-                        <a href='/index.php'
-                            class='hover:text-[#007bff] text-[#007bff] block font-semibold text-[15px]'>Home</a>
-                    </li>
-                    <li class='max-lg:border-b border-gray-300 max-lg:py-3 px-3'><a href='/view/BLOG.PHP'
-                            class='hover:text-[#007bff] text-gray-500 block font-semibold text-[15px]'>Blog</a>
-                    </li>
-                    <li class='max-lg:border-b border-gray-300 max-lg:py-3 px-3'><a href='javascript:void(0)'
-                            class='hover:text-[#007bff] text-gray-500 block font-semibold text-[15px]'>Feature</a>
-                    </li>
-
-                    <li class='max-lg:border-b border-gray-300 max-lg:py-3 px-3'><a href='javascript:void(0)'
-                            class='hover:text-[#007bff] text-gray-500 block font-semibold text-[15px]'>About</a>
-                    </li>
-                    <li class='max-lg:border-b border-gray-300 max-lg:py-3 px-3'><a href='javascript:void(0)'
-                            class='hover:text-[#007bff] text-gray-500 block font-semibold text-[15px]'>Contact</a>
-                    </li>
+            <nav id="collapseMenu" class="max-lg:hidden lg:block">
+                <ul class="lg:flex gap-x-5">
+                    <li><a href="/" class="text-[#007bff] font-semibold hover:text-blue-700">Home</a></li>
+                    <li><a href="/view/BLOG.PHP" class="text-gray-500 font-semibold hover:text-blue-700">Blog</a></li>
+                    <li><a href="#" class="text-gray-500 font-semibold hover:text-blue-700">Feature</a></li>
+                    <li><a href="#" class="text-gray-500 font-semibold hover:text-blue-700">About</a></li>
+                    <li><a href="#" class="text-gray-500 font-semibold hover:text-blue-700">Contact</a></li>
+                    <?php 
+                  
+if ($user && $user['role'] === 'admin') {
+    echo '<li><a href="/Admin/dashboard.php" class="text-gray-500 font-semibold hover:text-blue-700">dashboard</a></li>';
+}
+?>
                 </ul>
-            </div>
+            </nav>
+            
+            <div class="flex items-center space-x-4">
+            <?php 
+if (isset($_SESSION['token']) && $user) {
+    echo "<p class='text-gray-700'>Bonjour, " . htmlspecialchars($user['username']) . "</p>";
+    
+    // Correction de la syntaxe de l'image
+    echo '<div class="relative inline-block">
+    <a href="./users/profile.php"> <img src="../users/' . htmlspecialchars($user['user_image']) . '" class="w-14 h-14 rounded-full border-2 border-blue-600 p-0.5" /></a>
 
-           
-                <?php
-                if (isset($_SESSION['token']) && $user) {
-                    echo "<p class='text-gray-700'>Bonjour, " . htmlspecialchars($user['username']) . "</p>";
-                    echo '<a href="/authentification/logout.php" class="px-4 py-2 text-sm rounded-full font-bold text-white border-2 border-red-500 bg-red-500 hover:bg-transparent hover:text-red-500">Déconnexion</a>';
-                } else {
-                    echo '<a href="/authentification/login.php" class="px-4 py-2 text-sm rounded-full font-bold text-gray-500 border-2 hover:bg-gray-50">Login</a>';
-                    echo '<a href="/authentification/inscreption.php" class="px-4 py-2 text-sm rounded-full font-bold text-white border-2 border-[#007bff] bg-[#007bff] hover:bg-transparent hover:text-[#007bff]">Sign Up</a>';
-                }
-                ?>
-                 <div class="flex items-center space-x-4">
-            <div class="relative inline-block">
-        <img src="https://avf.asso.fr/guipavas/wp-content/uploads/sites/153/2020/09/92979836-ic%C3%B4ne-de-visage-anonyme-de-profil-personne-silhouette-grise-avatar-par-d%C3%A9faut-masculin-photo-placeholder--300x300.jpg" class="w-14 h-14 rounded-full" />
-        <span class="h-3 w-3 rounded-full border border-white bg-green-500 block absolute bottom-1 right-0"></span>
-      </div>
+            <span class="h-3 w-3 rounded-full border border-white bg-green-500 block absolute top-1 right-0"></span>
+          </div>';
+    
+    echo '<a href="/authentification/logout.php" class="px-4 py-2 text-sm rounded-full font-bold text-white border-2 border-red-500 bg-red-500 hover:bg-transparent hover:text-red-500">Déconnexion</a>';
+} else {
+    echo '<a href="/authentification/login.php" class="px-4 py-2 text-sm rounded-full font-bold text-gray-500 border-2 hover:bg-gray-50">Login</a>';
+    echo '<a href="/authentification/inscreption.php" class="px-4 py-2 text-sm rounded-full font-bold text-white border-2 border-[#007bff] bg-[#007bff] hover:bg-transparent hover:text-[#007bff]">Sign Up</a>';
+}
+?>
+
                 <button id="toggleOpen" class="lg:hidden">
                     <svg class="w-7 h-7" fill="#000" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                         <path fill-rule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"></path>
@@ -145,64 +124,69 @@ if (isset($_GET['id'])) {
         </div>
     </header>
 
-
     <!-- body content -->
     <?php
     $stmt = $conn->prepare("SELECT * FROM articles WHERE id = ?");
     $stmt->bind_param('i', $article_id);
     $stmt->execute();
     $result = $stmt->get_result();
+
     if (!$result) {
         die('Erreur dans la requête : ' . $conn->error);
     }
 
-if ($result->num_rows > 0) {
-    $article = $result->fetch_assoc();
+    if ($result->num_rows > 0) {
+        $article = $result->fetch_assoc();
 
-    // Variables dynamiques
-    $title = htmlspecialchars($article['title']);
-    $content = htmlspecialchars($article['content']);
-    $created_at = htmlspecialchars($article['created_at']);
-    $image_url = htmlspecialchars($article['image_url']);
-    $user_id = htmlspecialchars($article['user_id']);
+        // Variables dynamiques
+        $title = htmlspecialchars($article['title']);
+        $content = htmlspecialchars($article['content']);
+        $created_at = htmlspecialchars($article['created_at']);
+        $image_url = htmlspecialchars($article['image_url']);
+        $user_id = htmlspecialchars($article['user_id']);
+        $likes = intval($article['like']); // Nombre de likes (optionnel)
 
+        // Get the username
+        $user_query = "SELECT username FROM users WHERE id = $user_id";
+        $user_result = $conn->query($user_query);
+        $username = $user_result && $user_result->num_rows > 0
+            ? htmlspecialchars($user_result->fetch_assoc()['username'])
+            : 'Utilisateur inconnu';
 
-    $likes = intval($article['like']); // Nombre de likes (optionnel)
-    $user_query = "SELECT username FROM users WHERE id = $user_id";
-    $user_result = $conn->query($user_query);
-    $username = $user_result && $user_result->num_rows > 0
-        ? htmlspecialchars($user_result->fetch_assoc()['username'])
-        : 'Utilisateur inconnu';
-
-    echo "
+        // Display article details
+        echo "
     <div class='grid sm:grid-cols-2 items-center gap-8 font-[sans-serif] max-w-5xl max-sm:max-w-sm mx-auto p-4'>
         <div class='sm:h-[400px] flex'>
-<div class='relative font-[sans-serif] w-max mx-auto'>
-      <button type='button' id='dropdownToggle'
-        class='px-5 py-2.5 border border-gray-300 text-gray-800 text-sm outline-none bg-white hover:bg-gray-50'>
-        
-                            <p id='edit_pub' ><i class='fa-solid fa-ellipsis fa-flip-both fa-2x' style='color: #000000;'></i></p>
-
-      </button>
-
-      <ul id='dropdownMenu' class='absolute hidden shadow-[0_8px_19px_-7px_rgba(6,81,237,0.2)] bg-white py-2 z-[1000] min-w-full w-max divide-y max-h-96 overflow-auto'>
-        <li class='py-3 px-5 hover:bg-gray-50 text-gray-800 text-sm cursor-pointer'>Supprimmer</li>
-        <li class='py-3 px-5 hover:bg-gray-50 text-gray-800 text-sm cursor-pointer'><a href='../users/modifierArticle.php?article_id=$article_id'>Modifier l'article</a>
-
- </li>
-        <li class='py-3 px-5 hover:bg-gray-50 text-gray-800 text-sm cursor-pointer'>desactiver commentaire</li>
-        <li class='py-3 px-5 hover:bg-gray-50 text-gray-800 text-sm cursor-pointer'>Archiver</li>
-      </ul>
-    </div>
-            <img src='../users/$image_url' class='w-full h-full object-contain' alt='Image de l'article' />
+            <div class='relative font-[sans-serif] w-max mx-auto'> 
+          ";
+        if (isset($user) && is_array($user)) {
+            if ($user['role'] === 'admin' || $user['id'] == $user_id) {
+                echo "
+                    <button type='button' id='dropdownToggle' class='px-5 py-2.5 border border-gray-300 text-gray-800 text-sm outline-none bg-white hover:bg-gray-50'>
+                        <p id='edit_pub'><i class='fa-solid fa-ellipsis fa-flip-both fa-2x' style='color: #000000;'></i></p>
+                    </button>
+                    <ul id='dropdownMenu' class='absolute hidden shadow-[0_8px_19px_-7px_rgba(6,81,237,0.2)] bg-white py-2 z-[1000] min-w-full w-max divide-y max-h-96 overflow-auto'>
+                        <li class='py-3 px-5 hover:bg-gray-50 text-gray-800 text-sm cursor-pointer'>
+                            <a href='../users/supprimerArticle.php?article_id=" . $article_id . "' class='text-red-500 hover:text-red-700'>Supprimer</a>
+                        </li>
+                        <li class='py-3 px-5 hover:bg-gray-50 text-gray-800 text-sm cursor-pointer'>
+                            <a href='../users/modifierArticle.php?article_id=" . $article_id . "'>Modifier l'article</a>
+                        </li>
+                        <li class='py-3 px-5 hover:bg-gray-50 text-gray-800 text-sm cursor-pointer'>Désactiver commentaire</li>
+                        <li class='py-3 px-5 hover:bg-gray-50 text-gray-800 text-sm cursor-pointer'>Archiver</li>
+                    </ul>";
+            }
+        }
+        echo "</div>
+            <img src='../users/" . $image_url . "' class='w-full h-full object-contain' alt='Image de l'article' />
         </div>
 
         <div>
-            <h3 class='text-xl font-extrabold text-gray-800'>$title</h3>
-            <p class='mt-4 text-sm text-gray-800'>$content</p>
+            <h3 class='text-xl font-extrabold text-gray-800'>" . $title . "</h3>
+            <p class='mt-4 text-sm text-gray-800'>" . htmlspecialchars($content) . "</p>
 
             <div class='mt-8 text-left'>
-                <h4 class='text-base font-bold'>$username</h4>
+                <h4 class='text-base font-bold'>" . $username . "</h4>
             </div>
 
             <div class='flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0 md:space-x-8'>
@@ -214,46 +198,35 @@ if ($result->num_rows > 0) {
                             <path d='M89.584 155.139V84.378h23.742l3.562-27.585H89.584V39.184c0-7.984 2.208-13.425 13.67-13.425l14.595-.006V1.08C115.325.752 106.661 0 96.577 0 75.52 0 61.104 12.853 61.104 36.452v20.341H37.29v27.585h23.814v70.761h28.48z'></path>
                         </svg>
                     </a>
-                    <a href='javascript:void(0)'
-                        class='w-7 h-7 inline-flex items-center justify-center rounded-full bg-[#03a9f4] hover:bg-[#03a1f4]'>
-                        <svg xmlns='http://www.w3.org/2000/svg' width='14px' fill='#fff' viewBox='0 0 512 512'>
-                            <path d='M512 97.248c-19.04 8.352-39.328 13.888-60.48 16.576 21.76-12.992 38.368-33.408 46.176-58.016-20.288 12.096-42.688 20.64-66.56 25.408C411.872 60.704 384.416 48 354.464 48c-58.112 0-104.896 47.168-104.896 104.992 0 8.32.704 16.32 2.432 23.936-87.264-4.256-164.48-46.08-216.352-109.792-9.056 15.712-14.368 33.696-14.368 53.056 0 36.352 18.72 68.576 46.624 87.232-16.864-.32-33.408-5.216-47.424-12.928v1.152c0 51.008 36.384 93.376 84.096 103.136-8.544 2.336-17.856 3.456-27.52 3.456-6.72 0-13.504-.384-19.872-1.792 13.6 41.568 52.192 72.128 98.08 73.12-35.712 27.936-81.056 44.768-130.144 44.768-8.608 0-16.864-.384-25.12-1.44C46.496 446.88 101.6 464 161.024 464c193.152 0 298.752-160 298.752-298.688 0-4.64-.16-9.12-.384-13.568 20.832-14.784 38.336-33.248 52.608-54.496z'></path>
-                        </svg>
-                    </a>
-                    <a href='javascript:void(0)'
-                        class='w-7 h-7 inline-flex items-center justify-center rounded-full bg-[#03a9f4] hover:bg-[#03a1f4]'>
-                        <svg xmlns='http://www.w3.org/2000/svg' width='14px' fill='#fff' viewBox='0 0 512 512'>
-                            <path d='M512 97.248c-19.04 8.352-39.328 13.888-60.48 16.576 21.76-12.992 38.368-33.408 46.176-58.016-20.288 12.096-42.688 20.64-66.56 25.408C411.872 60.704 384.416 48 354.464 48c-58.112 0-104.896 47.168-104.896 104.992 0 8.32.704 16.32 2.432 23.936-87.264-4.256-164.48-46.08-216.352-109.792-9.056 15.712-14.368 33.696-14.368 53.056 0 36.352 18.72 68.576 46.624 87.232-16.864-.32-33.408-5.216-47.424-12.928v1.152c0 51.008 36.384 93.376 84.096 103.136-8.544 2.336-17.856 3.456-27.52 3.456-6.72 0-13.504-.384-19.872-1.792 13.6 41.568 52.192 72.128 98.08 73.12-35.712 27.936-81.056 44.768-130.144 44.768-8.608 0-16.864-.384-25.12-1.44C46.496 446.88 101.6 464 161.024 464c193.152 0 298.752-160 298.752-298.688 0-4.64-.16-9.12-.384-13.568 20.832-14.784 38.336-33.248 52.608-54.496z'></path>
-                        </svg>
-                    </a>
-                   
-                
+                    
+                    <!-- Add more social media icons here -->
                 </div>
 
                 <!-- Bouton Like -->
-                <div class='font-[sans-serif] bg-white border-2 divide-x-2 mt-4 flex rounded overflow-hidden'>
-                    <button type='button' id='likeButton'
-                        class='px-5 py-2.5 flex items-center text-[#333] text-sm tracking-wider font-semibold'>
-                        <svg xmlns='http://www.w3.org/2000/svg' class='w-5 h-5 mr-2' viewBox='0 0 512 512'>
-                            <path fill='#f9595f' d='M449.28 121.43a115.2 115.2 0 0 0-137.89-35.75c-21.18 9.14-40.07 24.55-55.39 45-15.32-20.5-34.21-35.91-55.39-45a115.2 115.2 0 0 0-137.89 35.75c-16.5 21.62-25.22 48.64-25.22 78.13 0 42.44 25.31 89 75.22 138.44 40.67 40.27 88.73 73.25 113.75 89.32a54.78 54.78 0 0 0 59.06 0c25-16.07 73.08-49.05 113.75-89.32 49.91-49.42 75.22-96 75.22-138.44 0-29.49-8.72-56.51-25.22-78.13z'></path>
-                        </svg>
-                        Like
-                    </button>
-                    <button type='button' id='likeCountButton' class='px-5 py-2.5'>$likes</button>
-                       <button id='openModal' ><i class='fa-solid fa-comment fa-2x' style='color: #0a0a0a;'></i></button>
-                </div>
-                </div>
+              <div class='font-[sans-serif] bg-white border-2 divide-x-2 mt-4 flex rounded overflow-hidden'>
+    <button type='button' id='likeButton' class='px-5 py-2.5 flex items-center text-[#333] text-sm tracking-wider font-semibold'>
+        <svg xmlns='http://www.w3.org/2000/svg' class='w-5 h-5 mr-2' viewBox='0 0 512 512'>
+            <path fill='#f9595f' d='M449.28 121.43a115.2 115.2 0 0 0-137.89-35.75c-21.18 9.14-40.07 24.55-55.39 45-15.32-20.5-34.21-35.91-55.39-45a115.2 115.2 0 0 0-137.89 35.75c-16.5 21.62-25.22 48.64-25.22 78.13 0 42.44 25.31 89 75.22 138.44 40.67 40.27 88.73 73.25 113.75 89.32a54.78 54.78 0 0 0 59.06 0c25-16.07 73.08-49.05 113.75-89.32 49.91-49.42 75.22-96 75.22-138.44 0-29.49-8.72-56.51-25.22-78.13z'></path>
+        </svg>
+        Like
+    </button>
+    <button type='button' id='likeCountButton' class='px-5 py-2.5'>
+        <span id='likeCount'>$likes</span>
+    </button>
+    <button id='openModal'><i class='fa-solid fa-comment ml-4 mr-4 text-2xl	' style='color: #0a0a0a;'></i></button>
+</div>
+
             </div>
         </div>
     </div>";
-} else {
-    echo "<p>Aucun article trouvé avec cet ID.</p>";
-}
-?>
+    } else {
+        echo "<p>Aucun article trouvé avec cet ID.</p>";
+    }
+    ?>
 
 
 
-   
+
 
     <!-- COMMENTAIRES -->
 
@@ -266,41 +239,102 @@ if ($result->num_rows > 0) {
             <div class="comments-list border border-gray-300 rounded-md p-4 h-48 overflow-y-auto mb-4" id="commentsList">
                 <!-- Les commentaires seront ajoutés ici -->
             </div>
-            <form action="./ajouter_commentaire.php" method="post">
-                <div class="flex items-center space-x-2">
-                    <input type="text" id="newComment" name="content" placeholder="Ajouter un commentaire" class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    <input type="hidden" id="articleId" name="article_id" value="<?php echo $article_id; ?>"> <!-- Champ caché pour l'ID de l'article -->
-                    <button id="addComment" class="p-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition" type="submit">Ajouter</button>
-                </div>
-            </form>
+            <?php
+            if (isset($user) && is_array($user)) {
+
+                echo '<form action="./ajouter_commentaire.php" method="post">
+            <div class="flex items-center space-x-2">
+                <input type="text" id="newComment" name="content" placeholder="Ajouter un commentaire" class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <input type="hidden" id="articleId" name="article_id" value="' . $article_id . '"> <!-- Champ caché pour l\'ID de l\'article -->
+                <button id="addComment" class="p-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition" type="submit">Ajouter</button>
+            </div>
+        </form>';
+            }
+
+            ?>
+
         </div>
     </div>
-
     <script>
         // Récupérer les commentaires du PHP et afficher dans la modal
         const comments = <?php echo $comments_json; ?>;
-        console.log(comments);
 
         document.addEventListener('DOMContentLoaded', () => {
             const commentsList = document.querySelector('#commentsList');
 
             // Afficher les commentaires dans la modal
             comments.forEach(comment => {
+                
                 const commentDiv = document.createElement('div');
                 commentDiv.classList.add('comment', 'mb-4', 'p-4', 'bg-gray-100', 'rounded-md', 'shadow-md', 'border', 'border-gray-300');
-
 
                 const commentDate = (comment.created_at === comment.updated_at) ?
                     `Créé le : ${new Date(comment.created_at).toLocaleString()}` :
                     `Modifié le : ${new Date(comment.updated_at).toLocaleString()}`;
 
-                commentDiv.innerHTML = `
-            <p><strong>${comment.user_name}</strong> - ${commentDate}</p>
-            <p>${comment.content}</p>
-        `;
+                // PHP: Vérification si l'utilisateur est admin ou propriétaire du commentaire
+                <?php if (isset($user) && is_array($user)) { ?>
+                    const userRole = '<?php echo $user['role']; ?>';
+                    const userId = '<?php echo $user['id']; ?>';
+                    const username = '<?php echo $user['username']; ?>';
+                    const commentUser = comment.user_name;
+                    const commentId=comment.id;
+
+                    // Si l'utilisateur est admin ou propriétaire du commentaire, afficher l'icône de modification
+                    if (userRole === 'admin' || userId === '<?php echo $user_id; ?>' || username == commentUser) {
+                        commentDiv.innerHTML = `
+                        <p><strong>${comment.user_name}</strong> - ${commentDate} 
+                    <a href='../view/editComment.php?comment_id=${commentId}'>
+                        <i class="fa-regular fa-pen-to-square ml-4" style="color: #050505;"></i>
+                    </a>
+                    <a href='../view/deleteComment.php?comment_id=${commentId}'>
+                        <i class="fa-solid fa-trash ml-4" style="color: #0f0f0f;"></i>
+                    </a>
+                        </p>
+                        <p>${comment.content}</p>
+                    `;
+                    } else {
+                        commentDiv.innerHTML = `
+                        <p><strong>${comment.user_name}</strong> - ${commentDate}</p>
+                        <p>${comment.content}</p>
+                    `;
+                    }
+                <?php } else { ?>
+                    // Cas où l'utilisateur n'est pas connecté ou n'est pas admin
+                    commentDiv.innerHTML = `
+                    <p><strong>${comment.user_name}</strong> - ${commentDate}</p>
+                    <p>${comment.content}</p>
+                `;
+                <?php } ?>
 
                 commentsList.appendChild(commentDiv);
             });
+        });
+
+
+        document.getElementById('likeButton').addEventListener('click', function() {
+            var articleId = <?php echo $article_id; ?>; // L'ID de l'article
+            var userId = <?php echo $user_id; ?>; // L'ID de l'utilisateur (vous devez l'obtenir à partir de la session ou d'une autre source)
+
+            // Envoi de la requête AJAX pour mettre à jour le like dans la base de données
+            fetch('like_article.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        article_id: articleId,
+                        user_id: userId
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Mettre à jour le nombre de likes affiché
+                        document.getElementById('likeCount').innerText = data.newLikeCount;
+                    }
+                })
+                .catch(error => console.error('Error:', error));
         });
     </script>
 
@@ -385,7 +419,6 @@ if ($result->num_rows > 0) {
                     </li>
                 </ul>
             </div>
-
             <div class="max-lg:min-w-[140px]">
                 <h4 class="text-gray-800 font-semibold text-base relative max-sm:cursor-pointer">Platforms</h4>
                 <ul class="space-y-4 mt-6">
@@ -464,7 +497,7 @@ if ($result->num_rows > 0) {
                 </li>
             </ul>
 
-            <p class='text-gray-600 text-sm md:ml-auto'>© ReadymadeUI. All rights reserved.</p>
+            <p class='text-gray-600 text-sm md:ml-auto'>© BLOGHUB. All rights reserved.</p>
         </div>
     </footer>
     <script src="../view/app.js"></script>

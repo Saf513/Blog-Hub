@@ -28,19 +28,34 @@ $user = userValidation($conn);
                     <li><a href="#" class="text-gray-500 font-semibold hover:text-blue-700">Feature</a></li>
                     <li><a href="#" class="text-gray-500 font-semibold hover:text-blue-700">About</a></li>
                     <li><a href="#" class="text-gray-500 font-semibold hover:text-blue-700">Contact</a></li>
+                    <?php 
+                  
+if ($user && $user['role'] === 'admin') {
+    echo '<li><a href="/Admin/dashboard.php" class="text-gray-500 font-semibold hover:text-blue-700">dashboard</a></li>';
+}
+?>
                 </ul>
             </nav>
             
             <div class="flex items-center space-x-4">
-                <?php 
-                if (isset($_SESSION['token']) && $user) {
-                    echo "<p class='text-gray-700'>Bonjour, " . htmlspecialchars($user['username']) . "</p>";
-                    echo '<a href="/authentification/logout.php" class="px-4 py-2 text-sm rounded-full font-bold text-white border-2 border-red-500 bg-red-500 hover:bg-transparent hover:text-red-500">Déconnexion</a>';
-                } else {
-                    echo '<a href="/authentification/login.php" class="px-4 py-2 text-sm rounded-full font-bold text-gray-500 border-2 hover:bg-gray-50">Login</a>';
-                    echo '<a href="/authentification/inscreption.php" class="px-4 py-2 text-sm rounded-full font-bold text-white border-2 border-[#007bff] bg-[#007bff] hover:bg-transparent hover:text-[#007bff]">Sign Up</a>';
-                }
-                ?>
+            <?php 
+if (isset($_SESSION['token']) && $user) {
+    echo "<p class='text-gray-700'>Bonjour, " . htmlspecialchars($user['username']) . "</p>";
+    
+    // Correction de la syntaxe de l'image
+    echo '<div class="relative inline-block">
+    <a href="./users/profile.php"> <img src="../users/' . htmlspecialchars($user['user_image']) . '" class="w-14 h-14 rounded-full border-2 border-blue-600 p-0.5" /></a>
+
+            <span class="h-3 w-3 rounded-full border border-white bg-green-500 block absolute top-1 right-0"></span>
+          </div>';
+    
+    echo '<a href="/authentification/logout.php" class="px-4 py-2 text-sm rounded-full font-bold text-white border-2 border-red-500 bg-red-500 hover:bg-transparent hover:text-red-500">Déconnexion</a>';
+} else {
+    echo '<a href="/authentification/login.php" class="px-4 py-2 text-sm rounded-full font-bold text-gray-500 border-2 hover:bg-gray-50">Login</a>';
+    echo '<a href="/authentification/inscreption.php" class="px-4 py-2 text-sm rounded-full font-bold text-white border-2 border-[#007bff] bg-[#007bff] hover:bg-transparent hover:text-[#007bff]">Sign Up</a>';
+}
+?>
+
                 <button id="toggleOpen" class="lg:hidden">
                     <svg class="w-7 h-7" fill="#000" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                         <path fill-rule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"></path>
@@ -51,14 +66,12 @@ $user = userValidation($conn);
     </header>
 </body>
 </html>
-
   <!-- hero section -->
   <section>
     <div class="relative bg-gradient-to-r from-purple-900 to-indigo-800 py-16 font-[sans-serif]">
       <div class="absolute inset-0">
         <img src="https://readymadeui.com/cardImg.webp" alt="Background Image" class="w-full h-full object-cover opacity-50" />
       </div>
-
       <div class="relative max-w-screen-xl mx-auto px-8 z-10 text-center text-white">
         <h1 class="text-4xl md:text-5xl font-extrabold leading-tight mb-6">Bienvenue sur notre blog !</h1>
         <p class="text-lg md:text-xl mb-12">Explorez les dernières tendances, conseils et inspirations pour enrichir votre quotidien .</p>

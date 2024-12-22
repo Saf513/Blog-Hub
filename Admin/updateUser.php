@@ -20,11 +20,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $password = $_POST['password']; // Don't forget to hash the password before saving
     $role = $_POST['role'];
 
+    $user_id = $_GET['user_id'];
     // Update the user details in the database
     // Assuming there's a function to update user data
     $updateQuery = "UPDATE users SET username = ?, email = ?, password = ?, role = ? WHERE id = ?";
     $stmt = $conn->prepare($updateQuery);
-    $stmt->bind_param("ssssi", $name, $email, $password, $role, $user['id']);
+    $stmt->bind_param("ssssi", $name, $email, $password, $role,  $user_id);
     $stmt->execute();
     $stmt->close();
 
@@ -35,7 +36,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 
 // Fetch the current user's data from the database
-$user_id = $user['id']; // Assuming you are updating the current logged-in user's data
+$user_id = $_GET['user_id'];
+
 $sql = "SELECT * FROM users WHERE id = ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $user_id);

@@ -70,12 +70,12 @@ if (!$user || $user['role'] !== 'admin') {
                 </svg>
               </div>
               <div class='flex items-center space-x-6 max-lg:flex-wrap'>
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 cursor-pointer fill-[#333] hover:fill-[#077bff]"
-                  viewBox="0 0 511 511.999">
-                  <path
-                    d="M498.7 222.695c-.016-.011-.028-.027-.04-.039L289.805 13.81C280.902 4.902 269.066 0 256.477 0c-12.59 0-24.426 4.902-33.332 13.809L14.398 222.55c-.07.07-.144.144-.21.215-18.282 18.386-18.25 48.218.09 66.558 8.378 8.383 19.44 13.235 31.273 13.746.484.047.969.07 1.457.07h8.32v153.696c0 30.418 24.75 55.164 55.168 55.164h81.711c8.285 0 15-6.719 15-15V376.5c0-13.879 11.293-25.168 25.172-25.168h48.195c13.88 0 25.168 11.29 25.168 25.168V497c0 8.281 6.715 15 15 15h81.711c30.422 0 55.168-24.746 55.168-55.164V303.14h7.719c12.586 0 24.422-4.903 33.332-13.813 18.36-18.367 18.367-48.254.027-66.633zm-21.243 45.422a17.03 17.03 0 0 1-12.117 5.024h-22.72c-8.285 0-15 6.714-15 15v168.695c0 13.875-11.289 25.164-25.168 25.164h-66.71V376.5c0-30.418-24.747-55.168-55.169-55.168H232.38c-30.422 0-55.172 24.75-55.172 55.168V482h-66.71c-13.876 0-25.169-11.29-25.169-25.164V288.14c0-8.286-6.715-15-15-15H48a13.9 13.9 0 0 0-.703-.032c-4.469-.078-8.66-1.851-11.8-4.996-6.68-6.68-6.68-17.55 0-24.234.003 0 .003-.004.007-.008l.012-.012L244.363 35.02A17.003 17.003 0 0 1 256.477 30c4.574 0 8.875 1.781 12.113 5.02l208.8 208.796.098.094c6.645 6.692 6.633 17.54-.031 24.207zm0 0"
-                    data-original="#000000" />
-                </svg>
+                <a href="../index.php"> <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 cursor-pointer fill-[#333] hover:fill-[#077bff]"
+                    viewBox="0 0 511 511.999">
+                    <path
+                      d="M498.7 222.695c-.016-.011-.028-.027-.04-.039L289.805 13.81C280.902 4.902 269.066 0 256.477 0c-12.59 0-24.426 4.902-33.332 13.809L14.398 222.55c-.07.07-.144.144-.21.215-18.282 18.386-18.25 48.218.09 66.558 8.378 8.383 19.44 13.235 31.273 13.746.484.047.969.07 1.457.07h8.32v153.696c0 30.418 24.75 55.164 55.168 55.164h81.711c8.285 0 15-6.719 15-15V376.5c0-13.879 11.293-25.168 25.172-25.168h48.195c13.88 0 25.168 11.29 25.168 25.168V497c0 8.281 6.715 15 15 15h81.711c30.422 0 55.168-24.746 55.168-55.164V303.14h7.719c12.586 0 24.422-4.903 33.332-13.813 18.36-18.367 18.367-48.254.027-66.633zm-21.243 45.422a17.03 17.03 0 0 1-12.117 5.024h-22.72c-8.285 0-15 6.714-15 15v168.695c0 13.875-11.289 25.164-25.168 25.164h-66.71V376.5c0-30.418-24.747-55.168-55.169-55.168H232.38c-30.422 0-55.172 24.75-55.172 55.168V482h-66.71c-13.876 0-25.169-11.29-25.169-25.164V288.14c0-8.286-6.715-15-15-15H48a13.9 13.9 0 0 0-.703-.032c-4.469-.078-8.66-1.851-11.8-4.996-6.68-6.68-6.68-17.55 0-24.234.003 0 .003-.004.007-.008l.012-.012L244.363 35.02A17.003 17.003 0 0 1 256.477 30c4.574 0 8.875 1.781 12.113 5.02l208.8 208.796.098.094c6.645 6.692 6.633 17.54-.031 24.207zm0 0"
+                      data-original="#000000" />
+                  </svg></a>
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 cursor-pointer fill-[#333] hover:fill-[#077bff]"
                   viewBox="0 0 371.263 371.263">
                   <path
@@ -197,18 +197,9 @@ if (!$user || $user['role'] !== 'admin') {
                   </a>
                 </li>
                 <li>
-                  <a href="javascript:void(0)"
-                    class="text-gray-800 text-sm flex items-center hover:bg-gray-100 rounded-md px-4 py-2 transition-all">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-[18px] h-[18px] mr-3"
-                      viewBox="0 0 24 24">
-                      <path
-                        d="M18 2c2.206 0 4 1.794 4 4v12c0 2.206-1.794 4-4 4H6c-2.206 0-4-1.794-4-4V6c0-2.206 1.794-4 4-4zm0-2H6a6 6 0 0 0-6 6v12a6 6 0 0 0 6 6h12a6 6 0 0 0 6-6V6a6 6 0 0 0-6-6z"
-                        data-original="#000000" />
-                      <path d="M12 18a1 1 0 0 1-1-1V7a1 1 0 0 1 2 0v10a1 1 0 0 1-1 1z" data-original="#000000" />
-                      <path d="M6 12a1 1 0 0 1 1-1h10a1 1 0 0 1 0 2H7a1 1 0 0 1-1-1z" data-original="#000000" />
-                    </svg>
-                    <span>Posts</span>
-                  </a>
+                 <button id="articles">
+                  posts
+                 </button>
                 </li>
                 <li>
                   <a href="javascript:void(0)"
@@ -382,7 +373,79 @@ if (!$user || $user['role'] !== 'admin') {
           </svg>
         </button>
 
-        <section class="main-content w-full overflow-auto p-6">
+        <section id="users"  class="main-content w-full overflow-auto p-6">
+        <h1 class="text-3xl md:text-4xl font-extrabold leading-tight mb-6 text-center">users!</h1>
+
+          <div class="overflow-x-auto">
+            <table class="min-w-full bg-white">
+              <thead class="bg-gray-800 whitespace-nowrap">
+                <tr>
+                  <th class="p-4 text-left text-sm font-medium text-white">
+                    Name
+                  </th>
+                  <th class="p-4 text-left text-sm font-medium text-white">
+                    Email
+                  </th>
+                  <th class="p-4 text-left text-sm font-medium text-white">
+                    Role
+                  </th>
+                  <th class="p-4 text-left text-sm font-medium text-white">
+                    Joined At
+                  </th>
+                  <th class="p-4 text-left text-sm font-medium text-white">
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+
+              <tbody class="whitespace-nowrap">
+
+                <?php
+                // Assuming you have already created the connection $conn
+                $sql = "SELECT * FROM users";
+                $result = $conn->query($sql);
+
+                // Check if there are any records in the users table
+                if ($result->num_rows > 0) {
+                  // Output data of each row
+                  while ($row = $result->fetch_assoc()) {
+                    echo '<tr class="even:bg-blue-50">
+                    <td class="p-4 text-sm text-black">
+                        ' . $row['username'] . '
+                    </td>
+                    <td class="p-4 text-sm text-black">
+                        ' . $row['email'] . '
+                    </td>
+                    <td class="p-4 text-sm text-black">
+                        ' . $row['role'] . '
+                    </td>
+                    <td class="p-4 text-sm text-black">
+                        ' . $row['created_at'] . '
+                    </td>
+                    <td class="p-4">
+                        <button class="mr-4" title="Edit">
+                           <a href="../Admin/updateUser.php?user_id=' . $row['id'] . '""> <svg xmlns="http://www.w3.org/2000/svg" class="w-5 fill-blue-500 hover:fill-blue-700" viewBox="0 0 348.882 348.882">
+                                <path d="m333.988 11.758-.42-.383A43.363 43.363 0 0 0 304.258 0a43.579 43.579 0 0 0-32.104 14.153L116.803 184.231a14.993 14.993 0 0 0-3.154 5.37l-18.267 54.762c-2.112 6.331-1.052 13.333 2.835 18.729 3.918 5.438 10.23 8.685 16.886 8.685h.001c2.879 0 5.693-.592 8.362-1.76l52.89-23.138a14.985 14.985 0 0 0 5.063-3.626L336.771 73.176c16.166-17.697 14.919-45.247-2.783-61.418zM130.381 234.247l10.719-32.134.904-.99 20.316 18.556-.904.99-31.035 13.578zm184.24-181.304L182.553 197.53l-20.316-18.556L294.305 34.386c2.583-2.828 6.118-4.386 9.954-4.386 3.365 0 6.588 1.252 9.082 3.53l.419.383c5.484 5.009 5.87 13.546.861 19.03z" data-original="#000000" />
+                            </svg></a>
+                        </button>
+                        <button class="mr-4" title="Delete">
+                           <a href="../Admin/deleteUser.php?user_id=' . $row['id'] . '"> <svg xmlns="http://www.w3.org/2000/svg" class="w-5 fill-red-500 hover:fill-red-700" viewBox="0 0 24 24">
+                                <path d="M19 7a1 1 0 0 0-1 1v11.191A1.92 1.92 0 0 1 15.99 21H8.01A1.92 1.92 0 0 1 6 19.191V8a1 1 0 0 0-2 0v11.191A3.918 3.918 0 0 0 8.01 23h7.98A3.918 3.918 0 0 0 20 19.191V8a1 1 0 0 0-1-1Zm1-3h-4V2a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v2H4a1 1 0 0 0 0 2h16a1 1 0 0 0 0-2ZM10 4V3h4v1Z" data-original="#000000" />
+                                <path d="M11 17v-7a1 1 0 0 0-2 0v7a1 1 0 0 0 2 0Zm4 0v-7a1 1 0 0 0-2 0v7a1 1 0 0 0 2 0Z" data-original="#000000" />
+                            </svg></a>
+
+                          
+                        </button>
+                    </td>
+                  </tr>';
+                  }
+                } else {
+                  echo "No users found.";
+                }
+                ?>
+
+<section id="aricles"   class="main-content w-full overflow-auto p-6">
+
           <div class="overflow-x-auto">
             <table class="min-w-full bg-white">
               <thead class="bg-gray-800 whitespace-nowrap">
@@ -451,7 +514,6 @@ if (!$user || $user['role'] !== 'admin') {
                 }
                 ?>
 
-               
 
               </tbody>
             </table>

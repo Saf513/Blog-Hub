@@ -110,6 +110,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         // echo "Article ajouté avec succès avec les tags !";
+        header("Location: ../view/BLOG.PHP");
+
+    
     } else {
         echo "Erreur lors de l'ajout de l'article : " . $stmt->error;
     }
@@ -203,7 +206,7 @@ $conn->close();
                             Description
                         </label>
                         <!-- Textarea -->
-                        <textarea id="description" name="description" placeholder="Enter your description here..."
+                        <textarea id="description"   name="description" placeholder="Enter your description here..."
                             rows="4"
                             class="w-full px-4  mt-4 py-3 bg-white text-black border-2 border-gray-300 rounded focus:outline-none focus:border-blue-500 placeholder-gray-400">
                         </textarea>
@@ -234,6 +237,10 @@ $conn->close();
             </form>
         </div>
     </div>
+    <script>
+//     
+
+
     <script src="../view/app.js"></script>
 
 </body>

@@ -235,3 +235,12 @@ function handleClick() {
 }
 
 dropdownToggle.addEventListener('click', handleClick);
+
+let container=document.querySelector('.main-content');
+let aricles=document.querySelector('#articles');
+let btnArticle=document.querySelector('#articles_btn');
+
+btnArticle.addEventListener('clic',()=>{
+container.style.display='none';
+})
+
