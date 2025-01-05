@@ -3,22 +3,13 @@ session_start();
 require('../connection/connection.php');
 require('../authentification/userValidation.php');
 
-// Get the user from the validation function
 $user = userValidation($conn);
 
-// First, check if the user is not null and is valid
 if (!$user || $user['role'] !== 'admin') {
   echo json_encode(['success' => false, 'message' => 'Accès limité aux admins']);
   exit;
 }
-
-// Proceed with the rest of your code if the user is an admin
 ?>
-
-
-
-
-
 
 
 <!DOCTYPE html>
@@ -139,7 +130,7 @@ if (!$user || $user['role'] !== 'admin') {
                         </g>
                       </svg>
                       Schedules</a>
-                    <a href="javascript:void(0)"
+                    <a href="../authentification/logout.php"
                       class="text-sm text-gray-800 cursor-pointer flex items-center p-2 rounded-md hover:bg-gray-100 dropdown-item transition duration-300 ease-in-out">
                       <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-3 fill-current" viewBox="0 0 6 6">
                         <path
@@ -348,7 +339,7 @@ if (!$user || $user['role'] !== 'admin') {
                   </a>
                 </li>
                 <li>
-                  <a href="javascript:void(0)"
+                  <a href="../authentification/logout.php"
                     class="text-gray-800 text-sm flex items-center hover:bg-gray-100 rounded-md px-4 py-2 transition-all">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-[18px] h-[18px] mr-3"
                       viewBox="0 0 6.35 6.35">

@@ -1,14 +1,12 @@
 <?php
 session_start();
 include('C:\Users\ycode\Desktop\BLOG HUB\connection\connection.php');
-// Vérifier si la session token existe
 if (!isset($_SESSION['token'])) {
-    // Rediriger vers la page de connexion
     header("Location: /authentification/login.php");
-    exit(); // Toujours utiliser exit() après une redirection pour éviter une exécution supplémentaire du script
+    exit(); 
 }
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $title = htmlspecialchars($_POST['title']);
     $description = htmlspecialchars($_POST['description']);
     $image_path = null;
@@ -19,12 +17,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (isset($_FILES['image']) && $_FILES['image']['error'] == UPLOAD_ERR_OK) {
 
-        // Define the directory for uploading images
         $upload_dir = 'uploads/';
         
-        // Ensure the uploads directory exists
         if (!is_dir($upload_dir)) {
-            mkdir($upload_dir, 0755, true); // Create the directory if it doesn't exist
+            mkdir($upload_dir); 
         }
     
         // Generate a unique name for the file to avoid overwriting
@@ -39,15 +35,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             die("Erreur: L'extension du fichier n'est pas autorisée.");
         }
     
-        // Check file size (optional: adjust the limit as necessary)
-        if ($_FILES['image']['size'] > 5000000) { // Max size 5MB
+    
+        if ($_FILES['image']['size'] > 5000000) { 
             die("Erreur: Le fichier est trop volumineux.");
         }
     
         // Move the uploaded file to the target directory
         if (move_uploaded_file($_FILES['image']['tmp_name'], $target_file)) {
             $image_path = $target_file;
-            // echo "L'image a été téléchargée avec succès: " . htmlspecialchars($file_name);
         } else {
             die("Erreur lors du téléchargement de l'image.");
         }
@@ -237,8 +232,7 @@ $conn->close();
             </form>
         </div>
     </div>
-    <script>
-//     
+ 
 
 
     <script src="../view/app.js"></script>

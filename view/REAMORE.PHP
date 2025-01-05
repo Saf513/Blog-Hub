@@ -6,46 +6,35 @@ $user = userValidation($conn);
 
 if (isset($_GET['id'])) {
     $article_id = $_GET['id'];
-
-    // Préparer la requête pour récupérer les commentaires
     $stmt = $conn->prepare("SELECT c.content, c.created_at ,c.id,  u.username AS user_name
     FROM comments c
     JOIN users u ON c.user_id = u.id
     WHERE c.article_id = ?");
 
-    // Vérifier si la préparation a échoué
     if ($stmt === false) {
         echo "Erreur dans la préparation de la requête : " . $conn->error;
         exit;
     }
 
-    // Lier le paramètre à la requête préparée
     $stmt->bind_param("i", $article_id);
 
-    // Exécuter la requête
     if (!$stmt->execute()) {
         echo "Erreur lors de l'exécution de la requête : " . $stmt->error;
         exit;
     }
 
-    // Récupérer les résultats de la requête
     $result = $stmt->get_result();
 
-    // Vérifier si la récupération des résultats a échoué
     if ($result === false) {
         echo "Erreur lors de la récupération des résultats : " . $stmt->error;
         exit;
     }
 
-    // Tableau pour stocker les commentaires
     $comments = [];
-
-    // Vérifier s'il y a des résultats
     if ($result->num_rows > 0) {
-        // Parcourir les résultats
         while ($row = $result->fetch_assoc()) {
             $comments[] = [
-                'id'=> $row['user_name'],
+                'id'=> $row['id'],
                 'user_name' => $row['user_name'],
                 'content' => $row['content'],
                 'created_at' => $row['created_at'],
@@ -54,12 +43,9 @@ if (isset($_GET['id'])) {
         }
         $comments_json = json_encode($comments);
     }
-
-    // Fermer la requête préparée
     $stmt->close();
 }
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -70,12 +56,12 @@ if (isset($_GET['id'])) {
     <title>Document</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
     <script src="https://cdn.tailwindcss.com"></script>
-
-
 </head>
 
 <body>
+
 <header class="flex shadow-md py-4 px-4 sm:px-10 bg-white font-[sans-serif] min-h-[70px] tracking-wide relative z-50">
+
         <div class="flex flex-wrap items-center justify-between gap-5 w-full">
             <a href="/">
                 <img src="/IMG/BLOG HUB (1) (1).png" alt="logo" class="w-36" style="width: 100px; height: auto;">
@@ -199,6 +185,7 @@ if (isset($_SESSION['token']) && $user) {
                         </svg>
                     </a>
                     
+                    
                     <!-- Add more social media icons here -->
                 </div>
 
@@ -236,11 +223,12 @@ if (isset($_SESSION['token']) && $user) {
                 <h2 class="text-xl font-semibold">Commentaires</h2>
                 <button id="closeModal" class="text-red-500 hover:text-red-700">&times;</button>
             </div>
-            <div class="comments-list border border-gray-300 rounded-md p-4 h-48 overflow-y-auto mb-4" id="commentsList">
-                <!-- Les commentaires seront ajoutés ici -->
-            </div>
+           
             <?php
             if (isset($user) && is_array($user)) {
+             echo'   <div class="comments-list border border-gray-300 rounded-md p-4 h-48 overflow-y-auto mb-4" id="commentsList">
+                <!-- Les commentaires seront ajoutés ici -->
+            </div>';
 
                 echo '<form action="./ajouter_commentaire.php" method="post">
             <div class="flex items-center space-x-2">
@@ -249,6 +237,11 @@ if (isset($_SESSION['token']) && $user) {
                 <button id="addComment" class="p-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition" type="submit">Ajouter</button>
             </div>
         </form>';
+            }
+            else{
+               echo ' <div class="comments-list border border-gray-300 rounded-md p-4 h-48 overflow-y-auto mb-4" id="commentsList">
+                <!-- Les commentaires seront ajoutés ici -->
+            </div>';
             }
 
             ?>
@@ -260,82 +253,47 @@ if (isset($_SESSION['token']) && $user) {
         const comments = <?php echo $comments_json; ?>;
 
         document.addEventListener('DOMContentLoaded', () => {
-            const commentsList = document.querySelector('#commentsList');
+    const commentsList = document.querySelector('#commentsList');
+    const userRole = '<?php echo isset($user['role']) ? $user['role'] : ""; ?>'; // Récupérer les données PHP dans JS
+    const userId = '<?php echo isset($user['id']) ? $user['id'] : ""; ?>'; // Récupérer l'ID utilisateur PHP
+    const username = '<?php echo isset($user['username']) ? $user['username'] : ""; ?>'; // Récupérer le nom de l'utilisateur PHP
 
-            // Afficher les commentaires dans la modal
-            comments.forEach(comment => {
-                
-                const commentDiv = document.createElement('div');
-                commentDiv.classList.add('comment', 'mb-4', 'p-4', 'bg-gray-100', 'rounded-md', 'shadow-md', 'border', 'border-gray-300');
+    // Afficher les commentaires dans la modal
+    comments.forEach(comment => {
+        const commentDiv = document.createElement('div');
+        commentDiv.classList.add('comment', 'mb-4', 'p-4', 'bg-gray-100', 'rounded-md', 'shadow-md', 'border', 'border-gray-300');
 
-                const commentDate = (comment.created_at === comment.updated_at) ?
-                    `Créé le : ${new Date(comment.created_at).toLocaleString()}` :
-                    `Modifié le : ${new Date(comment.updated_at).toLocaleString()}`;
+        const commentDate = (comment.created_at === comment.updated_at) ?
+            `Créé le : ${new Date(comment.created_at).toLocaleString()}` :
+            `Modifié le : ${new Date(comment.updated_at).toLocaleString()}`;
 
-                // PHP: Vérification si l'utilisateur est admin ou propriétaire du commentaire
-                <?php if (isset($user) && is_array($user)) { ?>
-                    const userRole = '<?php echo $user['role']; ?>';
-                    const userId = '<?php echo $user['id']; ?>';
-                    const username = '<?php echo $user['username']; ?>';
-                    const commentUser = comment.user_name;
-                    const commentId=comment.id;
-
-                    // Si l'utilisateur est admin ou propriétaire du commentaire, afficher l'icône de modification
-                    if (userRole === 'admin' || userId === '<?php echo $user_id; ?>' || username == commentUser) {
-                        commentDiv.innerHTML = `
-                        <p><strong>${comment.user_name}</strong> - ${commentDate} 
-                    <a href='../view/editComment.php?comment_id=${commentId}'>
+        // Vérification si l'utilisateur est admin ou propriétaire du commentaire
+        if (userRole === 'admin' || userId === comment.user_id || username === comment.user_name) {
+            // Si l'utilisateur est admin ou propriétaire, ajouter les icônes d'édition et de suppression
+            commentDiv.innerHTML = `
+                <p><strong>${comment.user_name}</strong> - ${commentDate} 
+                    <a href='../view/editComment.php?comment_id=${comment.id}'>
                         <i class="fa-regular fa-pen-to-square ml-4" style="color: #050505;"></i>
                     </a>
-                    <a href='../view/deleteComment.php?comment_id=${commentId}'>
+                    <a href='../view/deleteComment.php?comment_id=${comment.id}'>
                         <i class="fa-solid fa-trash ml-4" style="color: #0f0f0f;"></i>
                     </a>
-                        </p>
-                        <p>${comment.content}</p>
-                    `;
-                    } else {
-                        commentDiv.innerHTML = `
-                        <p><strong>${comment.user_name}</strong> - ${commentDate}</p>
-                        <p>${comment.content}</p>
-                    `;
-                    }
-                <?php } else { ?>
-                    // Cas où l'utilisateur n'est pas connecté ou n'est pas admin
-                    commentDiv.innerHTML = `
-                    <p><strong>${comment.user_name}</strong> - ${commentDate}</p>
-                    <p>${comment.content}</p>
-                `;
-                <?php } ?>
+                </p>
+                <p>${comment.content}</p>
+            `;
+        } else {
+            // Sinon, afficher uniquement le commentaire sans les icônes
+            commentDiv.innerHTML = `
+                <p><strong>${comment.user_name}</strong> - ${commentDate}</p>
+                <p>${comment.content}</p>
+            `;
+        }
 
-                commentsList.appendChild(commentDiv);
-            });
-        });
+        // Ajouter le commentaire au DOM
+        commentsList.appendChild(commentDiv);
+    });
+});
 
-
-        document.getElementById('likeButton').addEventListener('click', function() {
-            var articleId = <?php echo $article_id; ?>; // L'ID de l'article
-            var userId = <?php echo $user_id; ?>; // L'ID de l'utilisateur (vous devez l'obtenir à partir de la session ou d'une autre source)
-
-            // Envoi de la requête AJAX pour mettre à jour le like dans la base de données
-            fetch('like_article.php', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        article_id: articleId,
-                        user_id: userId
-                    })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        // Mettre à jour le nombre de likes affiché
-                        document.getElementById('likeCount').innerText = data.newLikeCount;
-                    }
-                })
-                .catch(error => console.error('Error:', error));
-        });
     </script>
 
     <!-- footer -->

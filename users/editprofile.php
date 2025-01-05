@@ -41,7 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = $_POST['email'];
     $profession = $_POST['profession'];
     $bio = $_POST['bio'];
-
+var_dump($_POST);
     // Gérer le téléchargement de l'image
     if ($_FILES['profile_picture']['error'] === 0) {
         $imagePath = 'uploads/' . basename($_FILES['profile_picture']['name']);
